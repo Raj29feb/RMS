@@ -1,0 +1,80 @@
+<app-navbar></app-navbar>
+<div class="loginForm-container">
+  <form [formGroup]="loginForm" (submit)="handleSubmit()">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="Enter email id"
+        />
+        <mat-error>Enter valid email id</mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="(hidePassword$$ | async) ? 'password' : 'text'"
+          formControlName="password"
+          placeholder="Enter password"
+          [ngStyle]="{ borderColor: 'blue !important' }"
+        />
+        <mat-error>Enter password</mat-error>
+        <mat-icon
+          (click)="hidePassword$$.next(!hidePassword$$.value)"
+          matSuffix
+          >{{
+            (hidePassword$$ | async) ? "visibility_off" : "visibility"
+          }}</mat-icon
+        >
+      </mat-form-field>
+      <div
+        class="error-div"
+        *ngIf="
+          loginForm.get('password')?.dirty && loginForm.get('password')?.invalid
+        "
+      >
+        <mat-error *ngIf="loginForm.get('password')?.hasError('whitespace')">
+          Cannot contain whitespace
+        </mat-error>
+        <mat-error class="error"
+          ><mat-icon>error</mat-icon>
+          <span>Minimum password length should be 6 digit</span></mat-error
+        >
+      </div>
+    </div>
+    <div class="btn-container">
+      <button
+        [ngStyle]="{
+          background: loginForm.invalid
+            ? 'var(--disabled-btn)'
+            : 'var(--primary-color)',
+          color: loginForm.invalid ? 'grey' : 'white',
+          borderRadius: '6px',
+          border: 'none'
+        }"
+        mat-flat-button
+        type="submit"
+        [disabled]="loginForm.invalid"
+      >
+        Login
+      </button>
+      <button class="forget-btn" mat-flat-button wide="true" type="button">
+        Forgot Password
+      </button>
+    </div>
+    <p>
+      <span>{{ accountText | sentence }}</span
+      ><a
+        routerLink="/register"
+        routerLinkActive="router-link-active"
+        class="register-text"
+        >{{ registerText | sentence }}</a
+      >
+    </p>
+  </form>
+</div>

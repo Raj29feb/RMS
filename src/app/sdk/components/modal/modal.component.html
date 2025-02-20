@@ -1,0 +1,11 @@
+<mat-dialog-content class="mat-dialog-text">{{
+  text | sentence
+}}</mat-dialog-content>
+<mat-dialog-actions class="action-btns">
+  <button mat-button mat-dialog-close class="button-yes" (click)="onYes()">
+    Yes
+  </button>
+  <button mat-button mat-dialog-close class="button-no" (click)="onNo()">
+    No
+  </button>
+</mat-dialog-actions>

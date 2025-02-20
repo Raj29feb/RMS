@@ -1,0 +1,26 @@
+h1 {
+  font-weight: 700;
+  font-family: serif;
+  font-size: xx-large;
+  letter-spacing: 1px;
+  padding: 22px 0px 32px;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+button {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: var(--primary-color);
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}

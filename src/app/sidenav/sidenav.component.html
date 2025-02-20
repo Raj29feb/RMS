@@ -1,0 +1,83 @@
+<div class="sidebar">
+  <mat-drawer-container class="sidebar-container" autosize>
+    <mat-drawer #drawer opened autosize [ngStyle]="style" mode="side">
+      <div class="side-nav-content">
+        <app-logo [logoStyle]="logoStyle" />
+        <mat-list role="list">
+          <mat-list-item
+            class="list-item"
+            role="listitem"
+            [ngStyle]="{
+              background: navLink.active ? 'white' : 'var(--primary-color)',
+              borderRadius: '4px'
+            }"
+            *ngFor="let navLink of navLinks"
+            (click)="handleNavigation(navLink.title)"
+          >
+            <mat-icon
+              [ngStyle]="{
+                color: navLink.active ? 'var(--primary-color)' : 'white'
+              }"
+              >{{ navLink.icon }}</mat-icon
+            ><span
+              *ngIf="isExpand$$.getValue()"
+              [ngStyle]="{
+                color: navLink.active ? 'var(--primary-color)' : 'white',
+                marginLeft: '10px'
+              }"
+              >{{ navLink.title | titlecase }}</span
+            ></mat-list-item
+          >
+          <mat-icon
+            [ngClass]="{
+              rotateLeft: !isExpand$$.getValue(),
+              rotateRight: isExpand$$.getValue()
+            }"
+            class="toggleSidebar"
+            (click)="toggleSidebar()"
+          >
+            chevron_left
+          </mat-icon>
+        </mat-list>
+      </div>
+    </mat-drawer>
+
+    <!--If you want to remove the side bar completely.
+    This is the by default way of toggling the sidebar
+    -->
+    <!-- <div class="example-sidenav-content">
+      <button type="button" mat-button (click)="drawer.toggle()">
+        Toggle sidenav
+      </button>
+    </div> -->
+    <!--The main content right to the sidebar-->
+    <div class="sidenav-content">
+      <!--showing who is logged in and logout option in the dropdown-->
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Example icon-button with a menu"
+        class="userName"
+        [title]="username$$ | async"
+      >
+        <span>{{ username$$ | async | titlecase }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <!-- <button mat-menu-item *ngFor="let patner of patners">
+          <mat-icon style="color: var(--primary-color)">handshake</mat-icon>
+          <span style="color: var(--primary-color); font-weight: 500">{{
+            patner | titlecase
+          }}</span>
+        </button> -->
+        <button mat-menu-item class="option-btns" (click)="handleLogout()">
+          <mat-icon style="color: var(--primary-color)">exit_to_app</mat-icon>
+          <span style="color: var(--primary-color); font-weight: 500">{{
+            logoutText | titlecase
+          }}</span>
+        </button>
+      </mat-menu>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-container>
+</div>

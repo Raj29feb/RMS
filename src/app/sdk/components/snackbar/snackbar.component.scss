@@ -1,0 +1,15 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    p{
+      margin: 0 0 0 26px;
+      color: var(--secondary-lynch);
+      font-family: Gotham;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+    }
+  }
+  

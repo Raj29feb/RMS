@@ -1,0 +1,7 @@
+<div class="container">
+  <img src="assets/icons/correct-sign.svg" *ngIf="!data.isErrorState" />
+  <img src="assets/icons/error.svg" *ngIf="data.isErrorState" />
+  <p>
+    {{ data.content }}
+  </p>
+</div>
