@@ -1,0 +1,54 @@
+.address-container {
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+button {
+  margin-top: 10px;
+}
+.mat-mdc-form-field {
+  margin: 10px;
+}
+.address-container {
+  text-align: center;
+}
+form {
+  height: 385px;
+  overflow-y: auto;
+}
+button {
+  cursor: pointer;
+}
+.button-no {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: var(--primary-color);
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}
+.button-yes {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+  background: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}
+.action-btns {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}

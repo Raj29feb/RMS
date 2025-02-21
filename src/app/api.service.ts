@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { map, mergeMap, Observable, of, tap } from 'rxjs';
 import { enviroment } from 'src/enviroments/enviroment';
 import { SnackbarService } from './snackbar.service';
 
@@ -50,5 +50,27 @@ export class ApiService {
       observer.next({ data: '' });
       observer.next();
     });
+  }
+  createAddress(data: Array<object>): Observable<Object> {
+    if (data)
+      return this.http
+        .post(`${enviroment.base_url}/add-address`, data.reverse())
+        .pipe(
+          tap((response: any) => {
+            this.snackbar.openSnackBar(false, response.message);
+          }),
+          map(() => {
+            return this.getAddresses();
+          })
+        );
+    return new Observable((observer) => {
+      observer.next({ message: "Address can't be empty", data: [] });
+      observer.next();
+    });
+  }
+  getAddresses(): Observable<any> {
+    return this.http
+      .get(`${enviroment.base_url}/get-address`)
+      .pipe(map((response: any) => response.data.reverse()));
   }
 }

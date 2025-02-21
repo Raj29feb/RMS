@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
     });
   }
   handleSubmit() {
-    // console.log('form values::', this.loginForm.value);
     this.api.login$(this.loginForm.value).subscribe({
       next: (result: any) => {
         this.snackbar.openSnackBar(false, result.message);
@@ -43,9 +42,6 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.snackbar.openSnackBar(true, err.message);
-      },
-      complete: () => {
-        console.log('Login api hit compeleted');
       },
     });
   }

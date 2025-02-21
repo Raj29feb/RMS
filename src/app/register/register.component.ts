@@ -44,7 +44,6 @@ export class RegisterComponent {
     );
   }
   handleSubmit() {
-    console.log('form values::', this.registerForm.value);
     this.api.register$(this.registerForm.value).subscribe({
       next: (result) => {
         this.snackbar.openSnackBar(false, result.message);
@@ -52,9 +51,6 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.snackbar.openSnackBar(true, err.message);
-      },
-      complete: () => {
-        console.log('Register api hit compeleted');
       },
     });
   }

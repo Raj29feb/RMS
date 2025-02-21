@@ -3,6 +3,8 @@ import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { ApiService } from '../api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../sdk/components/modal/modal.component';
+import { SnackbarService } from '../snackbar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidenav',
@@ -49,7 +51,12 @@ export class SidenavComponent implements OnInit {
     },
   ];
 
-  constructor(private api: ApiService, private dailog: MatDialog) {}
+  constructor(
+    private api: ApiService,
+    private dailog: MatDialog,
+    private snackbar: SnackbarService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.isExpand$$
@@ -72,8 +79,17 @@ export class SidenavComponent implements OnInit {
         }
       });
     //get the user info through getUsername API
-    this.api.getUsername().subscribe((result) => {
-      this.username$$.next(result.data);
+    this.api.getUsername().subscribe({
+      next: (result) => {
+        this.username$$.next(result.data);
+      },
+      error: (err) => {
+        this.snackbar.openSnackBar(true, err.error.message);
+        if (err.status === 403) {
+          this.router.navigate(['login']);
+          localStorage.clear();
+        }
+      },
     });
   }
   handleNavigation(navigate: string) {
