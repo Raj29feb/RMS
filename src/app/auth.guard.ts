@@ -15,7 +15,7 @@ export const authGuard: CanActivateFn = (
   // If the user is logged in and trying to access the login page
   if (loginStatus && route.routeConfig?.path === 'login') {
     // Redirect to the user lobby or home page
-    router.navigate(['/user-lobby']); // Or any other route you prefer
+    router.navigate(['/restaurants']); // Or any other route you prefer
     return false; // Prevent navigation
   }
 

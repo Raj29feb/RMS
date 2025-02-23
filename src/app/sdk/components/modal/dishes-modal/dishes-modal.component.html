@@ -1,0 +1,222 @@
+<form [formGroup]="dishesForm" (ngSubmit)="onSubmit()">
+  <div formArrayName="dishes">
+    <div>
+      <div
+        *ngFor="let dish of dishes.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <h2>Dish Entry {{ i + 1 }}</h2>
+        <div class="dishes-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Selected Restaurant*</mat-label>
+            <mat-menu #menu="matMenu">
+              <div
+                class="menuOptions"
+                *ngIf="restaurantNames?.length; else noData"
+              >
+                <button
+                  *ngFor="let restaurant of restaurantNames"
+                  mat-menu-item
+                  (click)="selectRestaurant(restaurant, i)"
+                >
+                  {{ restaurant.restaurantName }}
+                </button>
+              </div>
+
+              <ng-template #noData>
+                <p>Create some restaurants.</p>
+              </ng-template>
+            </mat-menu>
+            <div class="inputIcon" [matMenuTriggerFor]="menu">
+              <input
+                matInput
+                formControlName="restaurantName"
+                [readonly]="true"
+                placeholder="Select"
+                [value]="dish.get('restaurantName')?.value"
+              />
+              <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </div>
+            <mat-error *ngIf="dish.get('restaurantName')?.hasError('required')"
+              >Restaurant name is required</mat-error
+            >
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Dish Name*</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              placeholder="Enter dish name"
+            />
+            <mat-error *ngIf="dish.get('name')?.hasError('required')"
+              >Dish name is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description*</mat-label>
+            <input
+              matInput
+              formControlName="description"
+              placeholder="Enter dish description"
+            />
+            <mat-error *ngIf="dish.get('description')?.hasError('required')"
+              >Description is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Price*</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="price"
+              placeholder="Enter price"
+            />
+            <mat-error *ngIf="dish.get('price')?.hasError('required')"
+              >Price is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Category*</mat-label>
+            <mat-menu #categoryMenu="matMenu">
+              <div class="menuOptions">
+                <button
+                  *ngFor="let category of categories"
+                  mat-menu-item
+                  (click)="selectCategory(category, i)"
+                >
+                  {{ category | titlecase }}
+                </button>
+              </div>
+            </mat-menu>
+            <div class="inputIcon" [matMenuTriggerFor]="categoryMenu">
+              <input
+                matInput
+                formControlName="category"
+                [value]="dish.get('category')?.value"
+                placeholder="Enter category"
+                [readonly]="true"
+              />
+              <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </div>
+            <mat-error *ngIf="dish.get('category')?.hasError('required')"
+              >Category is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Image</mat-label>
+            <input matInput formControlName="image" placeholder="Enter image" />
+          </mat-form-field>
+
+          <div class="ingredients-container" formArrayName="ingredients">
+            <div
+              *ngFor="
+                let ingredient of getIngredients(i).controls;
+                let j = index
+              "
+            >
+              <mat-form-field appearance="outline">
+                <mat-label>Ingredient*</mat-label>
+                <input
+                  matInput
+                  [formControlName]="j"
+                  placeholder="Enter ingredient"
+                />
+                <mat-error *ngIf="ingredient.hasError('required')">
+                  Ingredient is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Remove Ingredient Button -->
+              <button
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="removeIngredient(i, j)"
+                class="button-no"
+              >
+                Remove Ingredient
+              </button>
+            </div>
+          </div>
+          <!-- Add Ingredient Button -->
+          <button
+            type="button"
+            mat-raised-button
+            color="accent"
+            (click)="addIngredient(i)"
+            class="button-yes"
+          >
+            Add Ingredient
+          </button>
+          <div class="options">
+            <mat-label id="example-radio-group-label">Is Vegetarian</mat-label>
+            <mat-radio-group
+              aria-label="Select an option"
+              formControlName="isVegetarian"
+            >
+              <mat-radio-button [value]="true">Enabled</mat-radio-button>
+              <mat-radio-button [value]="false">Disabled</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-label id="example-radio-group-label">Is Vegan</mat-label>
+            <mat-radio-group
+              aria-label="Select an option"
+              formControlName="isVegan"
+            >
+              <mat-radio-button [value]="true">Enabled</mat-radio-button>
+              <mat-radio-button [value]="false">Disabled</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-label id="example-radio-group-label">Available</mat-label>
+            <mat-radio-group
+              aria-label="Select an option"
+              formControlName="available"
+            >
+              <mat-radio-button [value]="true">Enabled</mat-radio-button>
+              <mat-radio-button [value]="false">Disabled</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <!-- Remove Dishes Button -->
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            class="button-no"
+            (click)="removeDishes(i)"
+          >
+            Remove Dish
+          </button>
+        </div>
+        <hr />
+      </div>
+      <div class="action-btns">
+        <!-- Add Dishes Button -->
+        <button
+          type="button"
+          class="button-no"
+          mat-raised-button
+          color="accent"
+          (click)="addDishes()"
+        >
+          Add
+        </button>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          mat-raised-button
+          color="primary"
+          class="button-yes"
+          [disabled]="dishesForm.invalid"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

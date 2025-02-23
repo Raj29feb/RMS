@@ -1,0 +1,52 @@
+<div class="heading">
+  <app-page-breadcrum [breadcrum]="title" />
+  <div class="action-btns">
+    <button (click)="handleEdit()">{{ editBtn | titlecase }}</button>
+    <button class="button-yes" (click)="handleDelete()">
+      {{ deleteBtn | titlecase }}
+    </button>
+  </div>
+</div>
+
+<div class="restaurant-data" *ngIf="restaurant">
+  <span class="keyValue">
+    <strong class="key">Address Line 1</strong>
+    <span class="value">{{ restaurant.addressLine1 | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Address Line 2</strong>
+    <span class="value">{{ restaurant.addressLine2 | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">City</strong>
+    <span class="value">{{ restaurant.city | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Country</strong>
+    <span class="value">{{ restaurant.country | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Latitude</strong>
+    <span class="value">{{ restaurant.latitude }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Longitude</strong>
+    <span class="value">{{ restaurant.longitude }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Restaurant Name</strong>
+    <span class="value">{{ restaurant.restaurantName }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">State</strong>
+    <span class="value">{{ restaurant.state }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Zipcode</strong>
+    <span class="value">{{ restaurant.zipCode }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Owner</strong>
+    <span class="value">{{ restaurant.owner }}</span>
+  </span>
+</div>

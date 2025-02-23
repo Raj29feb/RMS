@@ -1,21 +1,23 @@
-<!-- <mat-dialog-content class="mat-dialog-text">{{
-  text | sentence
-}}</mat-dialog-content>
-<mat-dialog-actions class="action-btns">
-  <button mat-button mat-dialog-close class="button-yes" (click)="onYes()">
-    Yes
-  </button>
-  <button mat-button mat-dialog-close class="button-no" (click)="onNo()">
-    No
-  </button>
-</mat-dialog-actions> -->
 <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
   <div formArrayName="addresses">
     <div
       *ngFor="let address of addresses.controls; let i = index"
       [formGroupName]="i"
     >
+      <h2>Restaurant Entry {{ i + 1 }}</h2>
       <div class="address-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Restaurant Name*</mat-label>
+          <input
+            matInput
+            formControlName="restaurantName"
+            placeholder="Enter restaurant name"
+          />
+          <mat-error *ngIf="address.get('restaurantName')?.hasError('required')"
+            >Restaurant name is required</mat-error
+          >
+        </mat-form-field>
+
         <mat-form-field appearance="outline">
           <mat-label>Address Line 1*</mat-label>
           <input
@@ -58,6 +60,7 @@
           <input
             matInput
             formControlName="zipCode"
+            type="number"
             placeholder="Enter postal code"
           />
           <mat-error *ngIf="address.get('postalCode')?.hasError('required')"
@@ -88,6 +91,7 @@
           Remove
         </button>
       </div>
+      <hr />
     </div>
   </div>
 

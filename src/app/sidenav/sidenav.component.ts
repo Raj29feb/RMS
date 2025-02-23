@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { ApiService } from '../api.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalComponent } from '../sdk/components/modal/modal.component';
+import { ModalComponent } from '../sdk/components/modal/confirm-modal/modal.component';
 import { SnackbarService } from '../snackbar.service';
 import { Router } from '@angular/router';
 
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class SidenavComponent implements OnInit {
   isExpand$$ = new BehaviorSubject<boolean>(true);
   username$$ = new BehaviorSubject<string | null>(null);
+  currentRoute$$ = new BehaviorSubject<string | null>(null);
   // patners = ['redial', 'Check voice mail', 'disable alerts'];
   logoutText = 'logout';
   style = {
@@ -35,13 +36,13 @@ export class SidenavComponent implements OnInit {
   };
   navLinks = [
     {
-      title: 'address',
-      icon: 'home',
+      title: 'restaurants',
+      icon: 'restaurant',
       active: true,
     },
     {
-      title: 'restaurants',
-      icon: 'restaurant',
+      title: 'distances',
+      icon: 'home',
       active: false,
     },
     {
@@ -59,6 +60,16 @@ export class SidenavComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    //set the sidebar as per the url param
+    const url = this.router.url.split('/')[1];
+    //changing the color in the sidebar
+    this.navLinks.map((navLink) => {
+      if (navLink.title === url) {
+        navLink.active = true;
+      } else {
+        navLink.active = false;
+      }
+    });
     this.isExpand$$
       .pipe(
         tap((response) => {
@@ -95,6 +106,7 @@ export class SidenavComponent implements OnInit {
   handleNavigation(navigate: string) {
     this.navLinks.map((navLink) => {
       if (navLink.title === navigate) {
+        this.router.navigate([navigate]);
         navLink.active = true;
       } else {
         navLink.active = false;

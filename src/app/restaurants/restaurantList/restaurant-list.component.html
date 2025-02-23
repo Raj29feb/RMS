@@ -1,0 +1,71 @@
+<div class="heading">
+  <app-page-breadcrum [breadcrum]="title" />
+  <button (click)="handleAddress()">{{ addAddressBtn | titlecase }}</button>
+</div>
+<!-- ngIf condition should use `else` syntax properly -->
+<div *ngIf="addresses.length > 0; else noData">
+  <!--Table to show all the restaurants dat-->
+
+  <table mat-table [dataSource]="addresses" class="mat-elevation-z8 demo-table">
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Restaurant Name</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.restaurantName | titlecase }}
+      </td>
+    </ng-container>
+
+    <!-- Owner Column -->
+    <ng-container matColumnDef="owner">
+      <th mat-header-cell *matHeaderCellDef>
+        <div class="ownerMenu" [matMenuTriggerFor]="menuOwner">
+          <span>Owner</span> <mat-icon matSuffix>arrow_drop_down</mat-icon
+          ><span>{{ filter | titlecase }}</span>
+        </div>
+        <mat-menu #menuOwner="matMenu">
+          <div class="menuOptions">
+            <span
+              *ngFor="let data of restaurants"
+              mat-menu-item
+              mat-menu-item
+              (click)="selectOwner(data.owner)"
+            >
+              {{ data.owner | titlecase }}
+            </span>
+          </div>
+        </mat-menu>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.owner | titlecase }}
+      </td>
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>Action</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon class="action-icon" (click)="view(element._id)"
+          >remove_red_eye</mat-icon
+        >
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <!-- <pre *ngFor="let address of addresses">
+    {{ address | json }}
+  </pre> -->
+</div>
+
+<!-- The `noData` template content -->
+<ng-template #noData>
+  <div>{{ noLocation | sentence }}</div>
+</ng-template>

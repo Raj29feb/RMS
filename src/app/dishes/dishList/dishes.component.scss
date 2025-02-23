@@ -1,0 +1,64 @@
+.action-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.button-yes {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+  background: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}
+.restaurantMenu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.menuOptions {
+  height: 132px;
+}
+button {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: var(--primary-color);
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+th {
+  color: gray;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+th,
+td {
+  text-align: center;
+}
+.action-icon {
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+  color: var(--primary-color);
+}

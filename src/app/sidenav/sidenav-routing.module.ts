@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { SidenavComponent } from './sidenav.component';
-import { UserLobbyComponent } from '../user-lobby/user-lobby.component';
+import { RestaurantComponent } from '../restaurants/restaurantList/restaurant-list.component';
 import { authGuard } from '../auth.guard';
 
 const routes: Routes = [
@@ -12,16 +12,30 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'user-lobby',
+        redirectTo: 'restaurants',
         pathMatch: 'full',
       },
       {
-        path: 'user-lobby',
+        path: 'restaurants',
         canActivate: [authGuard],
         loadChildren: () =>
-          import('../user-lobby/user-lobby.module').then(
-            (m) => m.UserLobbyModule
+          import('../restaurants/restaurantList/restaurant-list.module').then(
+            (m) => m.RestaurantModule
           ),
+      },
+      {
+        path: 'dishes',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('../dishes/dishList/dishes.module').then(
+            (m) => m.DishesModule
+          ),
+      },
+      {
+        path: 'distances',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('../distance/distance.module').then((m) => m.DistanceModule),
       },
     ],
   },

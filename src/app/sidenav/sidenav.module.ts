@@ -5,7 +5,8 @@ import { SidenavRoutingModule } from './sidenav-routing.module';
 import { SdkModule } from '../sdk/sdk.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { LogoModule } from '../logo/logo.module';
-import { UserLobbyModule } from '../user-lobby/user-lobby.module';
+import { RestaurantModule } from '../restaurants/restaurantList/restaurant-list.module';
+import { DishesModule } from '../dishes/dishList/dishes.module';
 
 @NgModule({
   declarations: [SidenavComponent],
@@ -15,7 +16,6 @@ import { UserLobbyModule } from '../user-lobby/user-lobby.module';
     SidenavRoutingModule,
     MatSidenavModule,
     LogoModule,
-    UserLobbyModule,
   ],
   exports: [SidenavComponent],
 })

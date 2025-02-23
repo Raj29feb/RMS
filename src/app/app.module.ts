@@ -11,7 +11,7 @@ import { ModalModule } from './sdk/components/modal/modal.module';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http'; // Import this
 import { AuthInterceptor } from './auth.interceptor';
-
+import { SdkModule } from './sdk/sdk.module';
 @NgModule({
   declarations: [AppComponent, SnackbarComponent],
   imports: [
@@ -21,6 +21,7 @@ import { AuthInterceptor } from './auth.interceptor';
     HttpClientModule,
     MatSnackBarModule,
     ModalModule,
+    SdkModule,
   ],
   providers: [
     {

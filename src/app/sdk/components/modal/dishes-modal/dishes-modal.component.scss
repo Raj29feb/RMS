@@ -1,0 +1,85 @@
+.dishes-container {
+  margin-bottom: 20px;
+  padding: 20px;
+}
+.ingredients-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+h2 {
+  margin: 20px 0px 0px 20px;
+}
+#example-radio-group-label {
+  font-weight: 500;
+}
+.mat-mdc-radio-button.mat-accent {
+  --mdc-radio-selected-icon-color: var(--primary-color);
+  --mdc-radio-selected-pressed-icon-color: var(--primary-color);
+  --mdc-radio-selected-hover-icon-color: var(--primary-color);
+  --mdc-radio-selected-focus-icon-color: var(--primary-color);
+}
+.options {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+button {
+  margin-top: 10px;
+}
+.mat-mdc-form-field {
+  margin: 10px;
+}
+.dishes-container {
+  text-align: center;
+}
+.inputIcon {
+  display: flex;
+}
+.menuOptions {
+  height: 132px;
+}
+.select-restaurant {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+form {
+  height: 385px;
+  overflow-y: auto;
+}
+button {
+  cursor: pointer;
+}
+.button-no {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: var(--primary-color);
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}
+.button-yes {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+  background: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}
+.action-btns {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}

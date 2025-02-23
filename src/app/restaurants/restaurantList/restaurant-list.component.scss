@@ -1,10 +1,3 @@
-h1 {
-  font-weight: 700;
-  font-family: serif;
-  font-size: xx-large;
-  letter-spacing: 1px;
-  padding: 22px 0px 32px;
-}
 .heading {
   display: flex;
   justify-content: space-between;
@@ -24,4 +17,28 @@ button {
   border: 1px solid var(--primary-color);
   border-radius: 4px;
   cursor: pointer;
+}
+th {
+  color: gray;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+th,
+td {
+  text-align: center;
+}
+.ownerMenu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.action-icon {
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+  color: var(--primary-color);
+}
+.menuOptions {
+  height: 132px;
 }

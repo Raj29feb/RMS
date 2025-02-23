@@ -38,10 +38,14 @@ export class LoginComponent implements OnInit {
       next: (result: any) => {
         this.snackbar.openSnackBar(false, result.message);
         localStorage.setItem('token', result.data);
-        this.router.navigate(['user-lobby']);
+        this.router.navigate(['restaurants']);
       },
       error: (err) => {
-        this.snackbar.openSnackBar(true, err.message);
+        this.snackbar.openSnackBar(true, err.error.message);
+        if (err.status === 403) {
+          this.router.navigate(['login']);
+          localStorage.clear();
+        }
       },
     });
   }

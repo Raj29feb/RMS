@@ -1,0 +1,57 @@
+.value {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.restaurant-data {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: repeat(auto-fit, minmax(150px, -webkit-max-content));
+  grid-template-columns: repeat(auto-fit, minmax(150px, max-content));
+  grid-row-gap: 32px;
+  grid-column-gap: 32px;
+}
+.keyValue {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+button {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: var(--primary-color);
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.action-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.button-yes {
+  box-sizing: border-box;
+  width: max-content;
+  height: min-content;
+  padding: 6px;
+  min-width: 161px;
+  height: 48px;
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+  background: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+}

@@ -1,0 +1,62 @@
+<div class="heading">
+  <app-page-breadcrum [breadcrum]="title" />
+  <div class="action-btns">
+    <button (click)="handleEdit()">{{ editBtn | titlecase }}</button>
+    <button class="button-yes" (click)="handleDelete()">
+      {{ deleteBtn | titlecase }}
+    </button>
+  </div>
+</div>
+
+<div class="dish-data" *ngIf="dish">
+  <span class="keyValue">
+    <strong class="key">Dish Name</strong>
+    <span class="value">{{ dish.name | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Description</strong>
+    <span class="value">{{ dish.description | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Restaurant</strong>
+    <span class="value">{{ dish.restaurantName | titlecase }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Price</strong>
+    <span class="value">{{ dish.price }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Category</strong>
+    <span class="value">{{ dish.category }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Ingredients</strong>
+    <span class="value" *ngFor="let ingredient of dish.ingredients">{{
+      ingredient
+    }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Is Vegetarian</strong>
+    <span class="value">{{ dish.isVegetarian }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Is Vegan</strong>
+    <span class="value">{{ dish.isVegan }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Image</strong>
+    <img width="100px" height="100px" [src]="dish.image" />
+  </span>
+  <span class="keyValue">
+    <strong class="key">Available</strong>
+    <span class="value">{{ dish.available }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Created At</strong>
+    <span class="value">{{ dish.createdAt }}</span>
+  </span>
+  <span class="keyValue">
+    <strong class="key">Updated At</strong>
+    <span class="value">{{ dish.updatedAt }}</span>
+  </span>
+</div>

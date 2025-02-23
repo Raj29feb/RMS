@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserLobbyComponent } from './user-lobby.component';
+import { DistanceComponent } from './distance.component';
 
-describe('UserLobbyComponent', () => {
-  let component: UserLobbyComponent;
-  let fixture: ComponentFixture<UserLobbyComponent>;
+describe('DistanceComponent', () => {
+  let component: DistanceComponent;
+  let fixture: ComponentFixture<DistanceComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [UserLobbyComponent]
+      declarations: [DistanceComponent]
     });
-    fixture = TestBed.createComponent(UserLobbyComponent);
+    fixture = TestBed.createComponent(DistanceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
