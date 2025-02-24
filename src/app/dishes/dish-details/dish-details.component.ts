@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from 'src/app/api.service';
-import { SnackbarService } from 'src/app/snackbar.service';
+
+import { DishService } from 'src/app/sdk/services/dish/dish.service';
+import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
 
 export interface Dish {
   _id: string;
@@ -35,20 +36,17 @@ export class DishDetailsComponent {
   constructor(
     private router: ActivatedRoute,
     private route: Router,
-    private api: ApiService,
+    private ds: DishService,
     private snackbar: SnackbarService
   ) {}
   ngOnInit(): void {
     this.router.paramMap.subscribe((params) => {
       const dishId = params.get('dishId');
-      console.log('Dish id :: ', dishId);
-      this.api.getDish(dishId as string).subscribe({
+      this.ds.getDish$(dishId as string).subscribe({
         next: (res) => {
-          console.log('response from single dish api :: ', res);
           this.dish = res.data;
         },
         error: (err) => {
-          console.log(err);
           this.snackbar.openSnackBar(true, err.error.message);
           if (err.status === 403) {
             this.route.navigate(['login']);

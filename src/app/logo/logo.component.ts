@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+
 import { BehaviorSubject } from 'rxjs';
 
 interface logoStyleInterface {
@@ -22,6 +23,7 @@ export class LogoComponent implements OnInit {
   logo = 'rms';
   @Input() logoStyle!: logoStyleInterface;
   styles = new BehaviorSubject({});
+
   ngOnInit(): void {
     this.styles.next(this.logoStyle);
   }

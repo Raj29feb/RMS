@@ -1,9 +1,4 @@
-import {
-  AbstractControl,
-  FormControl,
-  ValidationErrors,
-  ValidatorFn,
-} from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 
 let password = '';
 

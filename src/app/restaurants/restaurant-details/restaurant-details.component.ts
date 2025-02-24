@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../../api.service';
-import { SnackbarService } from '../../snackbar.service';
+
+import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
+import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 
 export interface Restaurant {
   _id: string;
@@ -31,15 +32,16 @@ export class RestaurantDetailsComponent implements OnInit {
   deleteBtn = 'delete';
   constructor(
     private router: ActivatedRoute,
-    private api: ApiService,
+    private rs: RestaurantService,
     private route: Router,
     private snackbar: SnackbarService
   ) {}
+
   ngOnInit(): void {
     this.router.paramMap.subscribe((params) => {
       const restaurantId = params.get('restaurantId');
       console.log('Reestaurant id :: ', restaurantId);
-      this.api.getRestaurant(restaurantId as String).subscribe({
+      this.rs.getRestaurant$(restaurantId as String).subscribe({
         next: (res) => {
           console.log('response from single restaurant api :: ', res);
           this.restaurant = res;
@@ -55,9 +57,11 @@ export class RestaurantDetailsComponent implements OnInit {
       });
     });
   }
+
   handleEdit() {
     console.log('Handle edit is working');
   }
+
   handleDelete() {
     console.log('Handle delete is working');
   }

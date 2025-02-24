@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
-import { Subject } from 'rxjs';
-import { ApiService } from '../api.service';
-import { SnackbarService } from '../snackbar.service';
 import { Router } from '@angular/router';
+
+import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
+import { DistanceService } from '../sdk/services/distance/distance.service';
 
 @Component({
   selector: 'app-distance',
@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 })
 export class DistanceComponent {
   title = 'Distances';
-  // restaurantNames$$ = new Subject();
   noDistances = 'no distances found';
   distances = [];
   displayedColumns: string[] = ['position', 'name', 'distance'];
@@ -20,11 +19,11 @@ export class DistanceComponent {
   @ViewChild(MatTable) table!: MatTable<any>;
 
   constructor(
-    private api: ApiService,
+    private dt: DistanceService,
     private snackbar: SnackbarService,
     private router: Router
   ) {
-    this.api.getDistances().subscribe({
+    this.dt.getDistances$().subscribe({
       next: (value) => {
         this.distances = value.data;
       },
@@ -37,7 +36,6 @@ export class DistanceComponent {
       },
     });
   }
-  ngOnInit(): void {}
 
   view(id: String) {
     this.router.navigate([`dishes/${id}`]);

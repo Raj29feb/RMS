@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { AddressModalComponent } from '../../sdk/components/modal/address-modal/address-modal.component';
-import { ApiService } from '../../api.service';
-import { SnackbarService } from '../../snackbar.service';
-import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
+
+import { MatDialog } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
+
+import { AddressModalComponent } from '../../sdk/components/modal/address-modal/address-modal.component';
+import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
+import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 
 interface Restaurant {
   _id: string;
@@ -41,11 +43,11 @@ export class RestaurantComponent implements OnInit {
 
   constructor(
     private dailog: MatDialog,
-    private api: ApiService,
+    private rs: RestaurantService,
     private snackbar: SnackbarService,
     private router: Router
   ) {
-    this.api.getRestaurants('all').subscribe({
+    this.rs.getRestaurants$('all').subscribe({
       next: (value) => {
         this.addresses = [...value];
         value.unshift({ owner: 'self', _id: 'self' });
@@ -64,6 +66,7 @@ export class RestaurantComponent implements OnInit {
       },
     });
   }
+
   ngOnInit(): void {}
 
   handleAddress() {
@@ -71,7 +74,7 @@ export class RestaurantComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Handle the form data here
-        this.api.createRestaurant(result.addresses).subscribe({
+        this.rs.createRestaurant$(result.addresses).subscribe({
           next: (response: any) => {
             response.subscribe({
               next: (address: any) => {
@@ -97,8 +100,9 @@ export class RestaurantComponent implements OnInit {
       }
     });
   }
+
   selectOwner(owner: string) {
-    this.api.getRestaurants(owner).subscribe({
+    this.rs.getRestaurants$(owner).subscribe({
       next: (value) => {
         this.filter = owner;
         this.addresses = value;
@@ -112,6 +116,7 @@ export class RestaurantComponent implements OnInit {
       },
     });
   }
+
   view(id: String) {
     this.router.navigate([`restaurants/${id}`]);
   }

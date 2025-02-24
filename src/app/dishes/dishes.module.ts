@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DishesComponent } from './dishes.component';
 import { RouterModule, Routes } from '@angular/router';
-import { SdkModule } from '../../sdk/sdk.module';
-import { DishDetailsComponent } from '../dish-details/dish-details.component';
+
+import { DishDetailsComponent } from './dish-details/dish-details.component';
+import { DishesComponent } from './dishList/dishes.component';
+
+import { SdkModule } from '../sdk/sdk.module';
 
 const routes: Routes = [
   {
@@ -19,6 +21,5 @@ const routes: Routes = [
 @NgModule({
   declarations: [DishesComponent, DishDetailsComponent],
   imports: [CommonModule, SdkModule, RouterModule.forChild(routes)],
-  exports: [RouterModule],
 })
-export class DishesRoutingModule {}
+export class DishesModule {}

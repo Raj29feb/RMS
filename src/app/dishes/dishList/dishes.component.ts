@@ -1,12 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
-import { SdkModule } from '../../sdk/sdk.module';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { ApiService } from '../../api.service';
-import { SnackbarService } from '../../snackbar.service';
 import { Router } from '@angular/router';
+
+import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { DishesModalComponent } from '../../sdk/components/modal/dishes-modal/dishes-modal.component';
-import { BehaviorSubject, Observable, Subject, take } from 'rxjs';
+
+import { Subject, take } from 'rxjs';
+
+import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
+import { DishService } from 'src/app/sdk/services/dish/dish.service';
 
 interface MenuItem {
   _id: string;
@@ -26,6 +29,7 @@ interface MenuItem {
   updatedAt: string;
   __v: number;
 }
+
 interface restaurant {
   restaurantName: string;
   _id: string;
@@ -52,11 +56,12 @@ export class DishesComponent {
 
   constructor(
     private dailog: MatDialog,
-    private api: ApiService,
+    private ds: DishService,
+    private rs: RestaurantService,
     private snackbar: SnackbarService,
     private router: Router
   ) {
-    this.api.getDishes('all').subscribe({
+    this.ds.getDishes$('all').subscribe({
       next: (value) => {
         this.dishes = value;
       },
@@ -69,6 +74,7 @@ export class DishesComponent {
       },
     });
   }
+
   ngOnInit(): void {
     this.getRestaurantsNames('all');
     this.restaurantNames$$.pipe(take(1)).subscribe((res: any) => {
@@ -79,33 +85,24 @@ export class DishesComponent {
   }
 
   handleAddDishes() {
-    // Subscribe to restaurantNames$$ to get the list of restaurant names
-    this.getRestaurantsNames('specific'); // This will update the restaurantNames$$ BehaviorSubject
+    this.getRestaurantsNames('specific');
     this.restaurantNames$$.pipe(take(1)).subscribe((res) => {
-      const restaurantNames = res; // Save the restaurant names in a variable
+      const restaurantNames = res;
 
-      console.log(restaurantNames); // Log the fetched data
-
-      // After data is fetched, open the dialog and pass the restaurant names as data
       const dialogRef = this.dailog.open(DishesModalComponent, {
-        data: { restaurantNames }, // Passing data to the dialog
+        data: { restaurantNames },
       });
 
-      // Handle the result after the dialog is closed
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
-          console.log('form data::', result);
-
-          // Handle the form data here and create new dishes
-          this.api.createDishes(result.dishes).subscribe({
+          this.ds.createDishes$(result.dishes).subscribe({
             next: (response: any) => {
               response.subscribe({
                 next: (dishes: any) => {
-                  this.dishes = dishes; // Handle the response data
+                  this.dishes = dishes;
                 },
                 error: (err: any) => {
-                  console.log(err);
-                  this.snackbar.openSnackBar(true, err.error.message); // Handle error
+                  this.snackbar.openSnackBar(true, err.error.message);
                   if (err.status === 403) {
                     this.router.navigate(['login']);
                     localStorage.clear();
@@ -114,7 +111,7 @@ export class DishesComponent {
               });
             },
             error: (err) => {
-              this.snackbar.openSnackBar(true, err.error.message); // Handle error
+              this.snackbar.openSnackBar(true, err.error.message);
               if (err.status === 403) {
                 this.router.navigate(['login']);
                 localStorage.clear();
@@ -127,7 +124,7 @@ export class DishesComponent {
   }
 
   getRestaurantsNames(filter: string) {
-    this.api.getRestaurantsNames(filter).subscribe({
+    this.rs.getRestaurantsNames$(filter).subscribe({
       next: (response: any) => this.restaurantNames$$.next(response.data),
       error: (err) => {
         this.snackbar.openSnackBar(true, err.error.message);
@@ -138,8 +135,9 @@ export class DishesComponent {
       },
     });
   }
+
   selectRestaurant(restaurantId: string, restaurantName: string) {
-    this.api.getDishes(restaurantId).subscribe({
+    this.ds.getDishes$(restaurantId).subscribe({
       next: (value) => {
         this.dishes = value;
         this.filter = restaurantName;
@@ -153,6 +151,7 @@ export class DishesComponent {
       },
     });
   }
+
   view(id: String) {
     this.router.navigate([`dishes/${id}`]);
   }
