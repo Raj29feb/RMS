@@ -70,7 +70,7 @@ export class ApiService {
   }
   getRestaurants(owner: string): Observable<any> {
     return this.http
-      .get(`${enviroment.base_url}/restaurants/${owner}`)
+      .get(`${enviroment.base_url}/restaurants?owner=${owner}`)
       .pipe(map((response: any) => response.data.reverse()));
   }
   getRestaurant(id: String): Observable<any> {
@@ -96,11 +96,13 @@ export class ApiService {
     });
   }
   getRestaurantsNames(filter: string) {
-    return this.http.get(`${enviroment.base_url}/restaurant-names/${filter}`);
+    return this.http.get(
+      `${enviroment.base_url}/restaurant-names?filter=${filter}`
+    );
   }
   getDishes(restaurantId: string): Observable<any> {
     return this.http
-      .get(`${enviroment.base_url}/dishes/${restaurantId}`)
+      .get(`${enviroment.base_url}/dishes?data=${restaurantId}`)
       .pipe(map((response: any) => response.data.reverse()));
   }
   getDish(id: string): Observable<any> {
