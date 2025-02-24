@@ -4,22 +4,17 @@
 </div>
 
 <div *ngIf="dishes.length > 0; else noData">
-  <!--Table to show all the restaurants dat-->
-
   <table mat-table [dataSource]="dishes" class="mat-elevation-z8 demo-table">
-    <!-- Position Column -->
     <ng-container matColumnDef="position">
       <th mat-header-cell *matHeaderCellDef>No.</th>
       <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
     </ng-container>
 
-    <!-- Name Column -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Dish Name</th>
       <td mat-cell *matCellDef="let element">{{ element.name | titlecase }}</td>
     </ng-container>
 
-    <!-- Restaurant Column -->
     <ng-container matColumnDef="restaurant">
       <th mat-header-cell *matHeaderCellDef>
         <div class="restaurantMenu" [matMenuTriggerFor]="menuRestaurant">
@@ -45,7 +40,6 @@
       </td>
     </ng-container>
 
-    <!-- Action Column -->
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef>Action</th>
       <td mat-cell *matCellDef="let element">
@@ -60,7 +54,6 @@
   </table>
 </div>
 
-<!-- The `noData` template content -->
 <ng-template #noData>
   <div>{{ noDishes | sentence }}</div>
 </ng-template>

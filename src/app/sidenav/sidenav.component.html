@@ -42,17 +42,8 @@
       </div>
     </mat-drawer>
 
-    <!--If you want to remove the side bar completely.
-    This is the by default way of toggling the sidebar
-    -->
-    <!-- <div class="example-sidenav-content">
-      <button type="button" mat-button (click)="drawer.toggle()">
-        Toggle sidenav
-      </button>
-    </div> -->
     <!--The main content right to the sidebar-->
     <div class="sidenav-content">
-      <!--showing who is logged in and logout option in the dropdown-->
       <button
         mat-icon-button
         [matMenuTriggerFor]="menu"
@@ -64,12 +55,6 @@
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <!-- <button mat-menu-item *ngFor="let patner of patners">
-          <mat-icon style="color: var(--primary-color)">handshake</mat-icon>
-          <span style="color: var(--primary-color); font-weight: 500">{{
-            patner | titlecase
-          }}</span>
-        </button> -->
         <button mat-menu-item class="option-btns" (click)="handleLogout()">
           <mat-icon style="color: var(--primary-color)">exit_to_app</mat-icon>
           <span style="color: var(--primary-color); font-weight: 500">{{

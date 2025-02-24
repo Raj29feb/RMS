@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject, tap } from 'rxjs';
-import { ApiService } from '../api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../sdk/components/modal/confirm-modal/modal.component';
-import { SnackbarService } from '../snackbar.service';
+import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../sdk/services/auth/auth.service';
+import { UserService } from '../sdk/services/user/user.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -15,7 +16,6 @@ export class SidenavComponent implements OnInit {
   isExpand$$ = new BehaviorSubject<boolean>(true);
   username$$ = new BehaviorSubject<string | null>(null);
   currentRoute$$ = new BehaviorSubject<string | null>(null);
-  // patners = ['redial', 'Check voice mail', 'disable alerts'];
   logoutText = 'logout';
   style = {
     background: 'var(--primary-color)',
@@ -53,7 +53,8 @@ export class SidenavComponent implements OnInit {
   ];
 
   constructor(
-    private api: ApiService,
+    private auth: AuthService,
+    private userService: UserService,
     private dailog: MatDialog,
     private snackbar: SnackbarService,
     private router: Router
@@ -89,8 +90,7 @@ export class SidenavComponent implements OnInit {
           this.style.minWidth = '86px';
         }
       });
-    //get the user info through getUsername API
-    this.api.getUsername().subscribe({
+    this.userService.getUsername$().subscribe({
       next: (result) => {
         this.username$$.next(result.data);
       },
@@ -103,6 +103,7 @@ export class SidenavComponent implements OnInit {
       },
     });
   }
+
   handleNavigation(navigate: string) {
     this.navLinks.map((navLink) => {
       if (navLink.title === navigate) {
@@ -114,17 +115,20 @@ export class SidenavComponent implements OnInit {
       return navLink;
     });
   }
+
   handleLogout() {
     const dialogRef = this.dailog.open(ModalComponent);
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.api.logout();
+        this.auth.logout();
       }
     });
   }
+
   toggleSidebar() {
     this.isExpand$$.next(!this.isExpand$$.getValue());
   }
+
   openDialog() {
     this.dailog.open(ModalComponent);
   }

@@ -6,31 +6,28 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
-import { SentencePipe } from '../sentence.pipe';
-import { AddressModalComponent } from './components/modal/address-modal/address-modal.component';
-import { AddressModalModule } from './components/modal/address-modal/address-modal.module';
+import { SentencePipe } from './pipes/sentence/sentence.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatTable, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { PageBreadcrumComponent } from './components/page-breadcrum/page-breadcrum.component';
-import { DishesModalComponent } from './components/modal/dishes-modal/dishes-modal.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SnackbarComponent } from './components/snackbar/snackbar.component';
 
 const MATERIAL_MODULES = [
   MatFormFieldModule,
   MatInputModule,
   MatIconModule,
-  MatInputModule,
   MatListModule,
   MatMenuModule,
   MatDialogModule,
-  MatFormFieldModule,
   MatTableModule,
-  MatIconModule,
   MatRadioModule,
+  MatSnackBarModule,
 ];
 const CUSTOM_PIPES = [SentencePipe];
 
-const SHARED_COMPONENTS = [PageBreadcrumComponent];
+const SHARED_COMPONENTS = [PageBreadcrumComponent, SnackbarComponent];
 
 const FORM_MODULE = [ReactiveFormsModule];
 

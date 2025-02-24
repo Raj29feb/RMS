@@ -1,14 +1,6 @@
 import { Component } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ApiService } from 'src/app/api.service';
-import { SnackbarService } from 'src/app/snackbar.service';
 
 @Component({
   selector: 'app-address-modal',
@@ -19,17 +11,15 @@ export class AddressModalComponent {
   addressForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private api: ApiService,
-    private snackbar: SnackbarService,
     private dailogRef: MatDialogRef<AddressModalComponent>
   ) {}
+
   ngOnInit(): void {
-    // Initialize the form with one address field by default
     this.addressForm = this.fb.group({
       addresses: this.fb.array([this.createRestaurant()]),
     });
   }
-  // Function to create address form group
+
   createRestaurant(): FormGroup {
     return this.fb.group({
       restaurantName: ['', Validators.required],
@@ -43,17 +33,14 @@ export class AddressModalComponent {
       longitude: [''],
     });
   }
-  // Getter for addresses form array
   get addresses(): FormArray {
     return this.addressForm.get('addresses') as FormArray;
   }
 
-  // Function to add a new address
   addAddress(): void {
     this.addresses.push(this.createRestaurant());
   }
 
-  // Function to remove an address
   removeAddress(index: number): void {
     this.addresses.removeAt(index);
   }
@@ -71,7 +58,6 @@ export class AddressModalComponent {
     };
   }
 
-  // Submit the form
   onSubmit(): void {
     this.addressForm.value.addresses.map((address: any) => {
       let { latitude, longitude } = this.generateRandomLocation();

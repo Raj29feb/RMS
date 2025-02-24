@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '../api.service';
-import { SnackbarService } from '../snackbar.service';
+
+import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
 import {
   matchPasswordValidator,
   noWhitespaceValidator,
 } from '../sdk/noWhitespace.validator';
+import { AuthService } from '../sdk/services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -22,10 +24,11 @@ export class RegisterComponent {
   hideConfirmPassword$$ = new BehaviorSubject(true);
   constructor(
     private fb: FormBuilder,
-    private api: ApiService,
+    private auth: AuthService,
     private router: Router,
     private snackbar: SnackbarService
   ) {}
+
   ngOnInit(): void {
     this.registerForm = this.fb.group(
       {
@@ -40,11 +43,12 @@ export class RegisterComponent {
           [Validators.required, Validators.minLength(6), noWhitespaceValidator],
         ],
       },
-      { validators: matchPasswordValidator } // Apply the matchPasswordValidator to the FormGroup
+      { validators: matchPasswordValidator }
     );
   }
+
   handleSubmit() {
-    this.api.register$(this.registerForm.value).subscribe({
+    this.auth.register$(this.registerForm.value).subscribe({
       next: (result) => {
         this.snackbar.openSnackBar(false, result.message);
         this.router.navigate(['login']);

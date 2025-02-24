@@ -1,10 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { noWhitespaceValidator } from '../sdk/noWhitespace.validator';
-import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
-import { SnackbarService } from '../snackbar.service';
+
+import { BehaviorSubject } from 'rxjs';
+
+import { noWhitespaceValidator } from '../sdk/noWhitespace.validator';
+import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
+import { AuthService } from '../sdk/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -18,23 +20,23 @@ export class LoginComponent implements OnInit {
   hidePassword$$ = new BehaviorSubject(true);
   constructor(
     private fb: FormBuilder,
-    private api: ApiService,
+    private auth: AuthService,
     private router: Router,
     private snackbar: SnackbarService
   ) {}
+
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      //directly passing { 'whitespace': true } as a validator, which is not
-      // valid because Angular expects a function as a validator, not a static object.
       password: [
         '',
         [Validators.required, Validators.minLength(6), noWhitespaceValidator],
       ],
     });
   }
+
   handleSubmit() {
-    this.api.login$(this.loginForm.value).subscribe({
+    this.auth.login$(this.loginForm.value).subscribe({
       next: (result: any) => {
         this.snackbar.openSnackBar(false, result.message);
         localStorage.setItem('token', result.data);
