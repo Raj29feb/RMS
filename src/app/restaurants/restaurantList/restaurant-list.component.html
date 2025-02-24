@@ -31,12 +31,12 @@
         <mat-menu #menuOwner="matMenu">
           <div class="menuOptions">
             <span
-              *ngFor="let data of restaurants"
+              *ngFor="let owner of owners"
               mat-menu-item
               mat-menu-item
-              (click)="selectOwner(data.owner)"
+              (click)="selectOwner(owner)"
             >
-              {{ data.owner | titlecase }}
+              {{ owner | titlecase }}
             </span>
           </div>
         </mat-menu>

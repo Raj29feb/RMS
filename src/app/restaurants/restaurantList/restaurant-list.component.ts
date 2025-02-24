@@ -34,6 +34,7 @@ export class RestaurantComponent implements OnInit {
   addresses = [{}];
   displayedColumns: string[] = ['position', 'name', 'owner', 'action'];
   restaurants: Restaurant[] = [];
+  owners = new Set<string>();
   filter = 'all';
 
   @ViewChild(MatTable) table!: MatTable<any>;
@@ -50,6 +51,9 @@ export class RestaurantComponent implements OnInit {
         value.unshift({ owner: 'self', _id: 'self' });
         value.unshift({ owner: 'all', _id: 'all' });
         this.restaurants = value;
+        this.restaurants.forEach((restaurant) =>
+          this.owners.add(restaurant.owner)
+        );
       },
       error: (err) => {
         this.snackbar.openSnackBar(true, err.error.message);
@@ -97,6 +101,7 @@ export class RestaurantComponent implements OnInit {
     this.api.getRestaurants(owner).subscribe({
       next: (value) => {
         this.filter = owner;
+        this.addresses = value;
       },
       error: (err) => {
         this.snackbar.openSnackBar(true, err.error.message);
