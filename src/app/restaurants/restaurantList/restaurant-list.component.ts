@@ -8,7 +8,7 @@ import { AddressModalComponent } from '../../sdk/components/modal/address-modal/
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { RestaurantData } from 'src/app/sdk/interfaces/restaurant.interface';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-restaurants',
@@ -36,7 +36,10 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   ) {
     this.rs
       .getRestaurants$('all')
-      .pipe(takeUntil(this.unsubscribe$$))
+      .pipe(
+        takeUntil(this.unsubscribe$$),
+        map((response: any) => response.data.reverse())
+      )
       .subscribe({
         next: (value) => {
           this.addresses = [...value];
@@ -74,7 +77,15 @@ export class RestaurantComponent implements OnInit, OnDestroy {
           // Handle the form data here
           this.rs
             .createRestaurant$(result.addresses)
-            .pipe(takeUntil(this.unsubscribe$$))
+            .pipe(
+              takeUntil(this.unsubscribe$$),
+              tap((response: any) => {
+                this.snackbar.openSnackBar(false, response.message);
+              }),
+              map(() => {
+                return this.rs.getRestaurants$('all');
+              })
+            )
             .subscribe({
               next: (response: any) => {
                 response.pipe(takeUntil(this.unsubscribe$$)).subscribe({

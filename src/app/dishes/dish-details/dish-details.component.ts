@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   BehaviorSubject,
+  map,
   Subject,
   switchMap,
   take,
@@ -139,7 +140,15 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
             if (result) {
               this.ds
                 .updateDish$(dishId, result)
-                .pipe(takeUntil(this.unsubscribe$$))
+                .pipe(
+                  takeUntil(this.unsubscribe$$),
+                  tap((response: any) => {
+                    this.snackbar.openSnackBar(false, response.message);
+                  }),
+                  map(() => {
+                    return this.ds.getDish$(dishId);
+                  })
+                )
                 .subscribe({
                   next: (response: any) => {
                     response.pipe(takeUntil(this.unsubscribe$$)).subscribe({

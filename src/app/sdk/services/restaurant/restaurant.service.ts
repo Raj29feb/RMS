@@ -12,16 +12,10 @@ export class RestaurantService {
 
   createRestaurant$(data: Array<object>): Observable<Object> {
     if (data)
-      return this.http
-        .post(`${enviroment.base_url}/add-restaurant`, data.reverse())
-        .pipe(
-          tap((response: any) => {
-            this.snackbar.openSnackBar(false, response.message);
-          }),
-          map(() => {
-            return this.getRestaurants$('all');
-          })
-        );
+      return this.http.post(
+        `${enviroment.base_url}/add-restaurant`,
+        data.reverse()
+      );
     return new Observable((observer) => {
       observer.next({ message: "Address can't be empty", data: [] });
       observer.next();
@@ -29,9 +23,7 @@ export class RestaurantService {
   }
 
   getRestaurants$(owner: string): Observable<any> {
-    return this.http
-      .get(`${enviroment.base_url}/restaurants?owner=${owner}`)
-      .pipe(map((response: any) => response.data.reverse()));
+    return this.http.get(`${enviroment.base_url}/restaurants?owner=${owner}`);
   }
 
   getRestaurant$(id: String): Observable<any> {

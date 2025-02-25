@@ -19,16 +19,10 @@ export class DishService {
 
   createDishes$(data: Array<object>): Observable<Object> {
     if (data)
-      return this.http
-        .post(`${enviroment.base_url}/add-dishes`, data.reverse())
-        .pipe(
-          tap((response: any) => {
-            this.snackbar.openSnackBar(false, response.message);
-          }),
-          map(() => {
-            return this.getDishes$('all');
-          })
-        );
+      return this.http.post(
+        `${enviroment.base_url}/add-dishes`,
+        data.reverse()
+      );
     return new Observable((observer) => {
       observer.next({ message: "Dishes can't be empty", data: [] });
       observer.next();
@@ -37,16 +31,10 @@ export class DishService {
 
   updateDish$(dishId: string, data: object): Observable<object> {
     if (data)
-      return this.http
-        .put(`${enviroment.base_url}/update-dish/${dishId}`, data)
-        .pipe(
-          tap((response: any) => {
-            this.snackbar.openSnackBar(false, response.message);
-          }),
-          map(() => {
-            return this.getDish$(dishId);
-          })
-        );
+      return this.http.put(
+        `${enviroment.base_url}/update-dish/${dishId}`,
+        data
+      );
     return new Observable((observer) => {
       observer.next({ message: "Dish can't be empty", data: [] });
       observer.next();

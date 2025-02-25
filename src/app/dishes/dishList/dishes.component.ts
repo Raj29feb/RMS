@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { DishesModalComponent } from '../../sdk/components/modal/dishes-modal/dishes-modal.component';
 
-import { pipe, Subject, take, takeUntil } from 'rxjs';
+import { map, pipe, Subject, take, takeUntil, tap } from 'rxjs';
 
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { DishService } from 'src/app/sdk/services/dish/dish.service';
@@ -90,7 +90,15 @@ export class DishesComponent implements OnDestroy {
             if (result) {
               this.ds
                 .createDishes$(result.dishes)
-                .pipe(takeUntil(this.unsubscribe$$))
+                .pipe(
+                  takeUntil(this.unsubscribe$$),
+                  tap((response: any) => {
+                    this.snackbar.openSnackBar(false, response.message);
+                  }),
+                  map(() => {
+                    return this.ds.getDishes$('all');
+                  })
+                )
                 .subscribe({
                   next: (response: any) => {
                     response.pipe(takeUntil(this.unsubscribe$$)).subscribe({
