@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MatDialog } from '@angular/material/dialog';
@@ -8,13 +8,14 @@ import { AddressModalComponent } from '../../sdk/components/modal/address-modal/
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { RestaurantData } from 'src/app/sdk/interfaces/restaurant.interface';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-restaurants',
   templateUrl: './restaurant-list.component.html',
   styleUrls: ['./restaurant-list.component.scss'],
 })
-export class RestaurantComponent implements OnInit {
+export class RestaurantComponent implements OnInit, OnDestroy {
   title = 'Restaurants';
   addAddressBtn = 'add restaurants';
   noLocation = 'no location found';
@@ -23,6 +24,7 @@ export class RestaurantComponent implements OnInit {
   restaurants: RestaurantData[] = [];
   owners = new Set<string>();
   filter = 'all';
+  private unsubscribe$$ = new Subject();
 
   @ViewChild(MatTable) table!: MatTable<any>;
 
@@ -32,41 +34,63 @@ export class RestaurantComponent implements OnInit {
     private snackbar: SnackbarService,
     private router: Router
   ) {
-    this.rs.getRestaurants$('all').subscribe({
-      next: (value) => {
-        this.addresses = [...value];
-        value.unshift({ owner: 'self', _id: 'self' });
-        value.unshift({ owner: 'all', _id: 'all' });
-        this.restaurants = value;
-        this.restaurants.forEach((restaurant) =>
-          this.owners.add(restaurant.owner)
-        );
-      },
-      error: (err) => {
-        this.snackbar.openSnackBar(true, err.error.message);
-        if (err.status === 403) {
-          //place it in interceptor it self
-          this.router.navigate(['login']);
-          localStorage.clear();
-        }
-      },
-    });
+    this.rs
+      .getRestaurants$('all')
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (value) => {
+          this.addresses = [...value];
+          value.unshift({ owner: 'self', _id: 'self' });
+          value.unshift({ owner: 'all', _id: 'all' });
+          this.restaurants = value;
+          this.restaurants.forEach((restaurant) =>
+            this.owners.add(restaurant.owner)
+          );
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+          if (err.status === 403) {
+            //place it in interceptor it self
+            this.router.navigate(['login']);
+            localStorage.clear();
+          }
+        },
+      });
+  }
+  ngOnDestroy(): void {
+    this.unsubscribe$$.next(null);
+    this.unsubscribe$$.complete();
   }
 
   ngOnInit(): void {}
 
   handleAddress() {
     const dialogRef = this.dailog.open(AddressModalComponent);
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // Handle the form data here
-        this.rs.createRestaurant$(result.addresses).subscribe({
-          next: (response: any) => {
-            response.subscribe({
-              next: (address: any) => {
-                this.addresses = address;
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe((result) => {
+        if (result) {
+          // Handle the form data here
+          this.rs
+            .createRestaurant$(result.addresses)
+            .pipe(takeUntil(this.unsubscribe$$))
+            .subscribe({
+              next: (response: any) => {
+                response.pipe(takeUntil(this.unsubscribe$$)).subscribe({
+                  next: (address: any) => {
+                    this.addresses = address;
+                  },
+                  error: (err: any) => {
+                    this.snackbar.openSnackBar(true, err.error.message);
+                    if (err.status === 403) {
+                      this.router.navigate(['login']);
+                      localStorage.clear();
+                    }
+                  },
+                });
               },
-              error: (err: any) => {
+              error: (err) => {
                 this.snackbar.openSnackBar(true, err.error.message);
                 if (err.status === 403) {
                   this.router.navigate(['login']);
@@ -74,33 +98,27 @@ export class RestaurantComponent implements OnInit {
                 }
               },
             });
-          },
-          error: (err) => {
-            this.snackbar.openSnackBar(true, err.error.message);
-            if (err.status === 403) {
-              this.router.navigate(['login']);
-              localStorage.clear();
-            }
-          },
-        });
-      }
-    });
+        }
+      });
   }
 
   selectOwner(owner: string) {
-    this.rs.getRestaurants$(owner).subscribe({
-      next: (value) => {
-        this.filter = owner;
-        this.addresses = value;
-      },
-      error: (err) => {
-        this.snackbar.openSnackBar(true, err.error.message);
-        if (err.status === 403) {
-          this.router.navigate(['login']);
-          localStorage.clear();
-        }
-      },
-    });
+    this.rs
+      .getRestaurants$(owner)
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (value) => {
+          this.filter = owner;
+          this.addresses = value;
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+          if (err.status === 403) {
+            this.router.navigate(['login']);
+            localStorage.clear();
+          }
+        },
+      });
   }
 
   view(id: String) {

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
+import { Subject, takeUntil } from 'rxjs';
 
 export interface Restaurant {
   _id: string;
@@ -25,34 +26,44 @@ export interface Restaurant {
   templateUrl: './restaurant-details.component.html',
   styleUrls: ['./restaurant-details.component.scss'],
 })
-export class RestaurantDetailsComponent implements OnInit {
+export class RestaurantDetailsComponent implements OnInit, OnDestroy {
   title = 'restaurants details';
   restaurant!: Restaurant;
   editBtn = 'Edit';
   deleteBtn = 'delete';
+  private unsubscribe$$ = new Subject();
   constructor(
     private router: ActivatedRoute,
     private rs: RestaurantService,
     private route: Router,
     private snackbar: SnackbarService
   ) {}
+  ngOnDestroy(): void {
+    this.unsubscribe$$.next(null);
+    this.unsubscribe$$.complete();
+  }
 
   ngOnInit(): void {
-    this.router.paramMap.subscribe((params) => {
-      const restaurantId = params.get('restaurantId');
-      this.rs.getRestaurant$(restaurantId as String).subscribe({
-        next: (res) => {
-          this.restaurant = res;
-        },
-        error: (err) => {
-          this.snackbar.openSnackBar(true, err.error.message);
-          if (err.status === 403) {
-            this.route.navigate(['login']);
-            localStorage.clear();
-          }
-        },
+    this.router.paramMap
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe((params) => {
+        const restaurantId = params.get('restaurantId');
+        this.rs
+          .getRestaurant$(restaurantId as String)
+          .pipe(takeUntil(this.unsubscribe$$))
+          .subscribe({
+            next: (res) => {
+              this.restaurant = res;
+            },
+            error: (err) => {
+              this.snackbar.openSnackBar(true, err.error.message);
+              if (err.status === 403) {
+                this.route.navigate(['login']);
+                localStorage.clear();
+              }
+            },
+          });
       });
-    });
   }
 
   handleEdit() {

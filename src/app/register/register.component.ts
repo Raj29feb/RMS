@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
 import {
@@ -16,18 +16,23 @@ import { AuthService } from '../sdk/services/auth/auth.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss', '../login/login.component.scss'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
   registerForm!: FormGroup;
   accountText = 'already have an account';
   loginText = 'login here';
   hidePassword$$ = new BehaviorSubject(true);
   hideConfirmPassword$$ = new BehaviorSubject(true);
+  private unsubscribe$$ = new Subject();
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
     private snackbar: SnackbarService
   ) {}
+  ngOnDestroy(): void {
+    this.unsubscribe$$.next(null);
+    this.unsubscribe$$.complete();
+  }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group(
@@ -48,14 +53,17 @@ export class RegisterComponent {
   }
 
   handleSubmit() {
-    this.auth.register$(this.registerForm.value).subscribe({
-      next: (result) => {
-        this.snackbar.openSnackBar(false, result.message);
-        this.router.navigate(['login']);
-      },
-      error: (err) => {
-        this.snackbar.openSnackBar(true, err.error.message);
-      },
-    });
+    this.auth
+      .register$(this.registerForm.value)
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (result) => {
+          this.snackbar.openSnackBar(false, result.message);
+          this.router.navigate(['login']);
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+        },
+      });
   }
 }

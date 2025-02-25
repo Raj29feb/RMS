@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Subject, tap } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../sdk/components/modal/confirm-modal/modal.component';
 import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
@@ -12,10 +12,11 @@ import { UserService } from '../sdk/services/user/user.service';
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent implements OnInit, OnDestroy {
   isExpand$$ = new BehaviorSubject<boolean>(true);
   username$$ = new BehaviorSubject<string | null>(null);
   currentRoute$$ = new BehaviorSubject<string | null>(null);
+  private unsubscribe$$ = new Subject();
   logoutText = 'logout';
   style = {
     background: 'var(--primary-color)',
@@ -59,6 +60,10 @@ export class SidenavComponent implements OnInit {
     private snackbar: SnackbarService,
     private router: Router
   ) {}
+  ngOnDestroy(): void {
+    this.unsubscribe$$.next(null);
+    this.unsubscribe$$.complete();
+  }
 
   ngOnInit(): void {
     //set the sidebar as per the url param
@@ -81,7 +86,8 @@ export class SidenavComponent implements OnInit {
             : ((this.logoStyle.width = '40px'),
               (this.logoStyle.height = '40px'),
               (this.logoStyle.fontSize = 'small'));
-        })
+        }),
+        takeUntil(this.unsubscribe$$)
       )
       .subscribe((response) => {
         if (response) {
@@ -90,18 +96,21 @@ export class SidenavComponent implements OnInit {
           this.style.minWidth = '86px';
         }
       });
-    this.userService.getUsername$().subscribe({
-      next: (result) => {
-        this.username$$.next(result.data);
-      },
-      error: (err) => {
-        this.snackbar.openSnackBar(true, err.error.message);
-        if (err.status === 403) {
-          this.router.navigate(['login']);
-          localStorage.clear();
-        }
-      },
-    });
+    this.userService
+      .getUsername$()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (result) => {
+          this.username$$.next(result.data);
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+          if (err.status === 403) {
+            this.router.navigate(['login']);
+            localStorage.clear();
+          }
+        },
+      });
   }
 
   handleNavigation(navigate: string) {
@@ -118,11 +127,14 @@ export class SidenavComponent implements OnInit {
 
   handleLogout() {
     const dialogRef = this.dailog.open(ModalComponent);
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.auth.logout();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe((result) => {
+        if (result) {
+          this.auth.logout();
+        }
+      });
   }
 
   toggleSidebar() {
