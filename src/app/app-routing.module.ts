@@ -16,8 +16,7 @@ const routes: Routes = [
   {
     path: '', //add the auth guard here
     canActivate: [authGuard],
-    loadChildren: () =>
-      import('./sidenav/sidenav.module').then((m) => m.SidenavModule),
+    loadChildren: () => import('./core/core.module').then((m) => m.CoreModule),
   },
 ];
 

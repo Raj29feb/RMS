@@ -13,6 +13,7 @@ import { PageBreadcrumComponent } from './components/page-breadcrum/page-breadcr
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 const MATERIAL_MODULES = [
   MatFormFieldModule,
@@ -24,6 +25,7 @@ const MATERIAL_MODULES = [
   MatTableModule,
   MatRadioModule,
   MatSnackBarModule,
+  MatSidenavModule,
 ];
 const CUSTOM_PIPES = [SentencePipe];
 

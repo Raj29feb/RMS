@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SidenavComponent } from './sidenav.component';
+import { CoreComponent } from './core.component';
 import { SdkModule } from '../sdk/sdk.module';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { LogoModule } from '../logo/logo.module';
 import { RouterModule, Routes } from '@angular/router';
-import { authGuard } from '../sdk/guard/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: SidenavComponent,
+    component: CoreComponent,
     children: [
       {
         path: 'restaurants',
@@ -34,13 +32,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [SidenavComponent],
-  imports: [
-    CommonModule,
-    SdkModule,
-    MatSidenavModule,
-    LogoModule,
-    RouterModule.forChild(routes),
-  ],
+  declarations: [CoreComponent],
+  imports: [CommonModule, SdkModule, LogoModule, RouterModule.forChild(routes)],
 })
-export class SidenavModule {}
+export class CoreModule {}

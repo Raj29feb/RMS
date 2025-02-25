@@ -8,11 +8,11 @@ import { AuthService } from '../sdk/services/auth/auth.service';
 import { UserService } from '../sdk/services/user/user.service';
 
 @Component({
-  selector: 'app-sidenav',
-  templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.scss'],
+  selector: 'app-core',
+  templateUrl: './core.component.html',
+  styleUrls: ['./core.component.scss'],
 })
-export class SidenavComponent implements OnInit, OnDestroy {
+export class CoreComponent implements OnInit, OnDestroy {
   isExpand$$ = new BehaviorSubject<boolean>(true);
   username$$ = new BehaviorSubject<string | null>(null);
   currentRoute$$ = new BehaviorSubject<string | null>(null);
