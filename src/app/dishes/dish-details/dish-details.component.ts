@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Subject, switchMap, take, tap } from 'rxjs';
+import { DishModalComponent } from 'src/app/sdk/components/modal/dish-modal/dish-modal.component';
+import { checkDishOwner } from 'src/app/sdk/interfaces/dish.interface';
 
 import { DishService } from 'src/app/sdk/services/dish/dish.service';
+import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
 
 export interface Dish {
@@ -33,31 +38,105 @@ export class DishDetailsComponent {
   dish!: Dish;
   editBtn = 'Edit';
   deleteBtn = 'delete';
+  dishOwner$$ = new Subject();
+  restaurantNames$$ = new Subject();
   constructor(
+    private dailog: MatDialog,
     private router: ActivatedRoute,
+    private rs: RestaurantService,
     private route: Router,
     private ds: DishService,
     private snackbar: SnackbarService
   ) {}
   ngOnInit(): void {
+    this.getRestaurantsNames('all');
+
     this.router.paramMap.subscribe((params) => {
       const dishId = params.get('dishId');
-      this.ds.getDish$(dishId as string).subscribe({
-        next: (res) => {
-          this.dish = res.data;
-        },
-        error: (err) => {
-          this.snackbar.openSnackBar(true, err.error.message);
-          if (err.status === 403) {
-            this.route.navigate(['login']);
-            localStorage.clear();
-          }
-        },
-      });
+      this.ds
+        .getDish$(dishId as string)
+        .pipe(
+          tap(() =>
+            this.ds.checkDish$(dishId as string).subscribe({
+              next: (result) => {
+                const data = result as checkDishOwner;
+                this.dishOwner$$.next(data.owner);
+              },
+              error: (err) => {
+                this.dishOwner$$.next(err.error.owner);
+                if (err.status === 403) {
+                  this.route.navigate(['login']);
+                  localStorage.clear();
+                }
+              },
+            })
+          )
+        )
+        .subscribe({
+          next: (res) => {
+            this.dish = res.data;
+          },
+          error: (err) => {
+            this.snackbar.openSnackBar(true, err.error.message);
+            if (err.status === 403) {
+              this.route.navigate(['login']);
+              localStorage.clear();
+            }
+          },
+        });
+    });
+  }
+  getRestaurantsNames(filter: string) {
+    this.rs.getRestaurantsNames$(filter).subscribe({
+      next: (response: any) => this.restaurantNames$$.next(response.data),
+      error: (err) => {
+        this.snackbar.openSnackBar(true, err.error.message);
+        if (err.status === 403) {
+          this.route.navigate(['login']);
+          localStorage.clear();
+        }
+      },
     });
   }
   handleEdit() {
-    console.log('Handle edit is working');
+    const dishId = this.route.url.split('/')[2];
+
+    this.getRestaurantsNames('specific');
+    this.restaurantNames$$.pipe(take(1)).subscribe((res) => {
+      const restaurantNames = res;
+
+      const dialogRef = this.dailog.open(DishModalComponent, {
+        data: { restaurantNames, dishId, restaurantDetails: this.dish },
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.ds.updateDish$(dishId, result).subscribe({
+            next: (response: any) => {
+              response.subscribe({
+                next: (dish: any) => {
+                  this.dish = dish.data;
+                },
+                error: (err: any) => {
+                  this.snackbar.openSnackBar(true, err.error.message);
+                  if (err.status === 403) {
+                    this.route.navigate(['login']);
+                    localStorage.clear();
+                  }
+                },
+              });
+            },
+            error: (err: any) => {
+              this.snackbar.openSnackBar(true, err.error.message);
+              if (err.status === 403) {
+                this.route.navigate(['login']);
+                localStorage.clear();
+              }
+            },
+          });
+        }
+      });
+    });
   }
   handleDelete() {
     console.log('Handle delete is working');

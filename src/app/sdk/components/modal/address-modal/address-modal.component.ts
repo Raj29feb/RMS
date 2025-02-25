@@ -59,13 +59,14 @@ export class AddressModalComponent {
   }
 
   onSubmit(): void {
+    //use the spread operator
+    //dont change the orignal array
     this.addressForm.value.addresses.map((address: any) => {
       let { latitude, longitude } = this.generateRandomLocation();
       address.latitude = latitude;
       address.longitude = longitude;
       return address;
     });
-
     this.dailogRef.close(this.addressForm.value);
   }
 }

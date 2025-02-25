@@ -1,9 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { enviroment } from 'src/enviroments/enviroment';
+import { UsernameResponse } from '../../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +12,10 @@ import { enviroment } from 'src/enviroments/enviroment';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  getUsername$(): Observable<{ data: string }> {
+  getUsername$(): Observable<UsernameResponse> {
     const token = localStorage.getItem('token');
     if (token) {
-      return this.http.get<{ data: string }>(`${enviroment.base_url}/username`);
+      return this.http.get<UsernameResponse>(`${enviroment.base_url}/username`);
     }
 
     return new Observable((observer) => {

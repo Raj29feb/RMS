@@ -15,9 +15,9 @@ import { AuthService } from '../sdk/services/auth/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  accountText = "don't have a account";
-  registerText = 'register here';
-  hidePassword$$ = new BehaviorSubject(true);
+  accountText: string = "don't have a account";
+  registerText: string = 'register here';
+  hidePassword$$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
@@ -44,10 +44,6 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.snackbar.openSnackBar(true, err.error.message);
-        if (err.status === 403) {
-          this.router.navigate(['login']);
-          localStorage.clear();
-        }
       },
     });
   }

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 
 import { enviroment } from 'src/enviroments/enviroment';
 import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
+import { LoginForm, LoginResponse } from '../../interfaces/auth.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,14 +19,11 @@ export class AuthService {
     private snackbar: SnackbarService
   ) {}
 
-  login$(payload: {
-    email: string;
-    password: string;
-  }): Observable<{ message: string; data: object }> {
+  login$(payload: LoginForm): Observable<LoginResponse> {
     return this.http.post(
       `${enviroment.base_url}/login`,
       payload
-    ) as Observable<{ message: string; data: object }>;
+    ) as Observable<LoginResponse>;
   }
 
   register$(payload: {

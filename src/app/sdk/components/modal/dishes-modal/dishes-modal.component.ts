@@ -23,7 +23,6 @@ export class DishesModalComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log('data:', this.data);
     this.restaurantNames = this.data.restaurantNames;
     this.dishesForm = this.fb.group({
       dishes: this.fb.array([this.createDishes()]),

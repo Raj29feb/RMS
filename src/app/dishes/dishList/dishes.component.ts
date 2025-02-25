@@ -10,30 +10,8 @@ import { Subject, take } from 'rxjs';
 
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { DishService } from 'src/app/sdk/services/dish/dish.service';
-
-interface MenuItem {
-  _id: string;
-  name: string;
-  description: string;
-  userId: string;
-  restaurantName: string;
-  price: number;
-  category: string;
-  ingredients: string[];
-  isVegetarian: boolean;
-  isVegan: boolean;
-  image: string;
-  restaurantId: string;
-  available: boolean;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
-interface restaurant {
-  restaurantName: string;
-  _id: string;
-}
+import { Dish } from 'src/app/sdk/interfaces/dish.interface';
+import { RestaurantNames } from 'src/app/sdk/interfaces/restaurant.interface';
 
 @Component({
   selector: 'app-dishes',
@@ -47,9 +25,9 @@ export class DishesComponent {
   addDishesBtn = 'add dishes';
   restaurantNames$$ = new Subject();
   noDishes = 'no dish found';
-  dishes: MenuItem[] = [];
+  dishes: Dish[] = [];
   displayedColumns: string[] = ['position', 'name', 'restaurant', 'action'];
-  restaurants: restaurant[] = [];
+  restaurants: RestaurantNames[] = [];
   filter = 'all';
 
   @ViewChild(MatTable) table!: MatTable<any>;
