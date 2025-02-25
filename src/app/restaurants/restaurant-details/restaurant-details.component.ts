@@ -40,14 +40,11 @@ export class RestaurantDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.router.paramMap.subscribe((params) => {
       const restaurantId = params.get('restaurantId');
-      console.log('Reestaurant id :: ', restaurantId);
       this.rs.getRestaurant$(restaurantId as String).subscribe({
         next: (res) => {
-          console.log('response from single restaurant api :: ', res);
           this.restaurant = res;
         },
         error: (err) => {
-          console.log(err);
           this.snackbar.openSnackBar(true, err.error.message);
           if (err.status === 403) {
             this.route.navigate(['login']);

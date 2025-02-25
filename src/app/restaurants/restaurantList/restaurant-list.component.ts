@@ -7,22 +7,7 @@ import { MatTable } from '@angular/material/table';
 import { AddressModalComponent } from '../../sdk/components/modal/address-modal/address-modal.component';
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
-
-interface Restaurant {
-  _id: string;
-  userId: string;
-  owner: string;
-  restaurantName: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  latitude: number;
-  longitude: number;
-  __v: number;
-}
+import { RestaurantData } from 'src/app/sdk/interfaces/restaurant.interface';
 
 @Component({
   selector: 'app-restaurants',
@@ -35,7 +20,7 @@ export class RestaurantComponent implements OnInit {
   noLocation = 'no location found';
   addresses = [{}];
   displayedColumns: string[] = ['position', 'name', 'owner', 'action'];
-  restaurants: Restaurant[] = [];
+  restaurants: RestaurantData[] = [];
   owners = new Set<string>();
   filter = 'all';
 
@@ -60,6 +45,7 @@ export class RestaurantComponent implements OnInit {
       error: (err) => {
         this.snackbar.openSnackBar(true, err.error.message);
         if (err.status === 403) {
+          //place it in interceptor it self
           this.router.navigate(['login']);
           localStorage.clear();
         }

@@ -55,10 +55,6 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.snackbar.openSnackBar(true, err.error.message);
-        if (err.status === 403) {
-          this.router.navigate(['login']);
-          localStorage.clear();
-        }
       },
     });
   }

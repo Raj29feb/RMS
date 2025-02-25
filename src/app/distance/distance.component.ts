@@ -4,6 +4,10 @@ import { Router } from '@angular/router';
 
 import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
 import { DistanceService } from '../sdk/services/distance/distance.service';
+import {
+  Distance,
+  DistanceResponse,
+} from '../sdk/interfaces/distance.interface';
 
 @Component({
   selector: 'app-distance',
@@ -13,7 +17,7 @@ import { DistanceService } from '../sdk/services/distance/distance.service';
 export class DistanceComponent {
   title = 'Distances';
   noDistances = 'no distances found';
-  distances = [];
+  distances!: Distance[];
   displayedColumns: string[] = ['position', 'name', 'distance'];
 
   @ViewChild(MatTable) table!: MatTable<any>;

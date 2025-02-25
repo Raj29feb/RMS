@@ -20,7 +20,7 @@ const routes: Routes = [
       import('./register/register.module').then((m) => m.RegisterModule),
   },
   {
-    path: '',
+    path: '', //add the auth guard here
     loadChildren: () =>
       import('./sidenav/sidenav.module').then((m) => m.SidenavModule),
   },
