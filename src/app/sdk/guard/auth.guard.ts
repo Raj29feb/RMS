@@ -11,13 +11,13 @@ export const authGuard: CanActivateFn = (
 
   const loginStatus = authService.checkLogin();
 
-  if (loginStatus && route.routeConfig?.path === 'login') {
+  if (loginStatus && route.routeConfig?.path === 'auth') {
     router.navigate(['/restaurants']);
     return false;
   }
 
-  if (!loginStatus && route.routeConfig?.path !== 'login') {
-    router.navigate(['/login']);
+  if (!loginStatus && route.routeConfig?.path !== 'auth') {
+    router.navigate(['/auth/login']);
     return false;
   }
 

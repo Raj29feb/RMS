@@ -5,22 +5,17 @@ import { authGuard } from './sdk/guard/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo: '/auth/login',
     pathMatch: 'full',
   },
   {
-    path: 'login',
+    path: 'auth',
     canActivate: [authGuard],
-    loadChildren: () =>
-      import('./login/login.module').then((m) => m.LoginModule),
-  },
-  {
-    path: 'register',
-    loadChildren: () =>
-      import('./register/register.module').then((m) => m.RegisterModule),
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '', //add the auth guard here
+    canActivate: [authGuard],
     loadChildren: () =>
       import('./sidenav/sidenav.module').then((m) => m.SidenavModule),
   },

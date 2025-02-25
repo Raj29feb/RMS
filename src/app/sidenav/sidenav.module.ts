@@ -13,13 +13,7 @@ const routes: Routes = [
     component: SidenavComponent,
     children: [
       {
-        path: '',
-        redirectTo: 'restaurants',
-        pathMatch: 'full',
-      },
-      {
         path: 'restaurants',
-        canActivate: [authGuard],
         loadChildren: () =>
           import('../restaurants/restaurant.module').then(
             (m) => m.RestaurantModule
@@ -27,13 +21,11 @@ const routes: Routes = [
       },
       {
         path: 'dishes',
-        canActivate: [authGuard],
         loadChildren: () =>
           import('../dishes/dishes.module').then((m) => m.DishesModule),
       },
       {
         path: 'distances',
-        canActivate: [authGuard],
         loadChildren: () =>
           import('../distance/distance.module').then((m) => m.DistanceModule),
       },

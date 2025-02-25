@@ -58,7 +58,7 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
             error: (err) => {
               this.snackbar.openSnackBar(true, err.error.message);
               if (err.status === 403) {
-                this.route.navigate(['login']);
+                this.route.navigate(['/auth/login']);
                 localStorage.clear();
               }
             },

@@ -38,7 +38,7 @@ export class DistanceComponent implements OnDestroy {
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
           if (err.status === 403) {
-            this.router.navigate(['login']);
+            this.router.navigate(['/auth/login']);
             localStorage.clear();
           }
         },

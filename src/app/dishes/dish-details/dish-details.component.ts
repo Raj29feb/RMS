@@ -83,7 +83,7 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
                   error: (err) => {
                     this.dishOwner$$.next(err.error.owner);
                     if (err.status === 403) {
-                      this.route.navigate(['login']);
+                      this.route.navigate(['/auth/login']);
                       localStorage.clear();
                     }
                   },
@@ -98,7 +98,7 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
             error: (err) => {
               this.snackbar.openSnackBar(true, err.error.message);
               if (err.status === 403) {
-                this.route.navigate(['login']);
+                this.route.navigate(['/auth/login']);
                 localStorage.clear();
               }
             },
@@ -114,7 +114,7 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
           if (err.status === 403) {
-            this.route.navigate(['login']);
+            this.route.navigate(['/auth/login']);
             localStorage.clear();
           }
         },
@@ -158,7 +158,7 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
                       error: (err: any) => {
                         this.snackbar.openSnackBar(true, err.error.message);
                         if (err.status === 403) {
-                          this.route.navigate(['login']);
+                          this.route.navigate(['/auth/login']);
                           localStorage.clear();
                         }
                       },
@@ -167,7 +167,7 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
                   error: (err: any) => {
                     this.snackbar.openSnackBar(true, err.error.message);
                     if (err.status === 403) {
-                      this.route.navigate(['login']);
+                      this.route.navigate(['/auth/login']);
                       localStorage.clear();
                     }
                   },

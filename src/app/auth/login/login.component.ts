@@ -9,9 +9,9 @@ import { Router } from '@angular/router';
 
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
-import { noWhitespaceValidator } from '../sdk/noWhitespace.validator';
-import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
-import { AuthService } from '../sdk/services/auth/auth.service';
+import { noWhitespaceValidator } from '../../sdk/noWhitespace.validator';
+import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
+import { AuthService } from '../../sdk/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',

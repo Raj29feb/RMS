@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
-import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
+import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import {
   matchPasswordValidator,
   noWhitespaceValidator,
-} from '../sdk/noWhitespace.validator';
-import { AuthService } from '../sdk/services/auth/auth.service';
+} from '../../sdk/noWhitespace.validator';
+import { AuthService } from '../../sdk/services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -59,7 +59,7 @@ export class RegisterComponent implements OnDestroy {
       .subscribe({
         next: (result) => {
           this.snackbar.openSnackBar(false, result.message);
-          this.router.navigate(['login']);
+          this.router.navigate(['/auth/login']);
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
