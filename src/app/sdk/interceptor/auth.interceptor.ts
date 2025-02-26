@@ -4,12 +4,15 @@ import {
   HttpInterceptor,
   HttpHandler,
   HttpRequest,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, take, tap, throwError } from 'rxjs';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor() {}
+  constructor(private snackbar: SnackbarService, private router: Router) {}
 
   intercept(
     req: HttpRequest<any>,
@@ -24,7 +27,15 @@ export class AuthInterceptor implements HttpInterceptor {
         },
       });
 
-      return next.handle(clonedRequest);
+      return next.handle(clonedRequest).pipe(
+        catchError((err: HttpErrorResponse) => {
+          if (err.status === 403) {
+            this.router.navigate(['/auth/login']);
+            localStorage.clear();
+          }
+          throw err;
+        })
+      );
     }
 
     return next.handle(req);

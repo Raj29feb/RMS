@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { enviroment } from 'src/enviroments/enviroment';
 import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
+import { checkRestaurantOwner } from '../../interfaces/restaurant.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,17 @@ export class RestaurantService {
   getRestaurantsNames$(filter: string): Observable<any> {
     return this.http.get(
       `${enviroment.base_url}/restaurant-names?filter=${filter}`
+    );
+  }
+  updateRestaurant$(id: string, data: object): Observable<any> {
+    return this.http.put(`${enviroment.base_url}/restaurant/${id}`, data);
+  }
+  deleteRestaurant$(id: string): Observable<any> {
+    return this.http.delete(`${enviroment.base_url}/restaurant/${id}`);
+  }
+  checkRestaurant$(restaurantId: string): Observable<checkRestaurantOwner> {
+    return this.http.get<checkRestaurantOwner>(
+      `${enviroment.base_url}/check-restaurant-owner/${restaurantId}`
     );
   }
 }

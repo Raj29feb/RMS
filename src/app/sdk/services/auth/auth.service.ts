@@ -7,7 +7,11 @@ import { Observable } from 'rxjs';
 
 import { enviroment } from 'src/enviroments/enviroment';
 import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
-import { LoginForm, LoginResponse } from '../../interfaces/auth.interface';
+import {
+  LoginForm,
+  LoginResponse,
+  RegisterResponse,
+} from '../../interfaces/auth.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -20,20 +24,20 @@ export class AuthService {
   ) {}
 
   login$(payload: LoginForm): Observable<LoginResponse> {
-    return this.http.post(
+    return this.http.post<LoginResponse>(
       `${enviroment.base_url}/login`,
       payload
-    ) as Observable<LoginResponse>;
+    );
   }
 
   register$(payload: {
     email: string;
     password: string;
-  }): Observable<{ message: string; data: object }> {
-    return this.http.post(
+  }): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(
       `${enviroment.base_url}/register`,
       payload
-    ) as Observable<{ message: string; data: object }>;
+    );
   }
 
   checkLogin(): boolean {
@@ -44,7 +48,7 @@ export class AuthService {
     return false;
   }
 
-  logout() {
+  logout(): void {
     localStorage.clear();
     this.snackbar.openSnackBar(false, 'User logged out successfully');
     this.router.navigate(['/auth/login']);

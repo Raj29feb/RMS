@@ -22,3 +22,9 @@ export interface DishData {
 export interface checkDishOwner {
   owner: boolean;
 }
+export interface DeleteDish {
+  message: string;
+}
+export interface updateDishResponse {
+  message: string;
+}

@@ -1,0 +1,86 @@
+<form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+  <h2>Update Restaurant</h2>
+  <div class="address-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Restaurant Name*</mat-label>
+      <input
+        matInput
+        formControlName="restaurantName"
+        placeholder="Enter restaurant name"
+      />
+      <mat-error *ngIf="addressForm.get('restaurantName')?.hasError('required')"
+        >Restaurant name is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Address Line 1*</mat-label>
+      <input
+        matInput
+        formControlName="addressLine1"
+        placeholder="Enter address line 1"
+      />
+      <mat-error *ngIf="addressForm.get('addressLine1')?.hasError('required')"
+        >Address Line 1 is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Address Line 2</mat-label>
+      <input
+        matInput
+        formControlName="addressLine2"
+        placeholder="Enter address line 2"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>City*</mat-label>
+      <input matInput formControlName="city" placeholder="Enter city" />
+      <mat-error *ngIf="addressForm.get('city')?.hasError('required')"
+        >City is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>State*</mat-label>
+      <input matInput formControlName="state" placeholder="Enter state" />
+      <mat-error *ngIf="addressForm.get('state')?.hasError('required')"
+        >State is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Zipcode*</mat-label>
+      <input
+        matInput
+        formControlName="zipCode"
+        type="number"
+        placeholder="Enter postal code"
+      />
+      <mat-error *ngIf="addressForm.get('postalCode')?.hasError('required')"
+        >Zipcode is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Country*</mat-label>
+      <input matInput formControlName="country" placeholder="Enter country" />
+      <mat-error *ngIf="addressForm.get('country')?.hasError('required')"
+        >Country is required</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div class="action-btns">
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+      class="button-yes"
+      [disabled]="addressForm.invalid"
+    >
+      Submit
+    </button>
+  </div>
+</form>

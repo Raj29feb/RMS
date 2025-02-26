@@ -1,15 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  map,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { map, Subject, take, takeUntil, tap } from 'rxjs';
+import { ModalComponent } from 'src/app/sdk/components/modal/confirm-modal/modal.component';
 import { DishModalComponent } from 'src/app/sdk/components/modal/dish-modal/dish-modal.component';
 import { checkDishOwner } from 'src/app/sdk/interfaces/dish.interface';
 
@@ -82,10 +75,6 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
                   },
                   error: (err) => {
                     this.dishOwner$$.next(err.error.owner);
-                    if (err.status === 403) {
-                      this.route.navigate(['/auth/login']);
-                      localStorage.clear();
-                    }
                   },
                 })
             ),
@@ -97,10 +86,6 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
             },
             error: (err) => {
               this.snackbar.openSnackBar(true, err.error.message);
-              if (err.status === 403) {
-                this.route.navigate(['/auth/login']);
-                localStorage.clear();
-              }
             },
           });
       });
@@ -113,10 +98,6 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
         next: (response: any) => this.restaurantNames$$.next(response.data),
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
-          if (err.status === 403) {
-            this.route.navigate(['/auth/login']);
-            localStorage.clear();
-          }
         },
       });
   }
@@ -157,19 +138,11 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
                       },
                       error: (err: any) => {
                         this.snackbar.openSnackBar(true, err.error.message);
-                        if (err.status === 403) {
-                          this.route.navigate(['/auth/login']);
-                          localStorage.clear();
-                        }
                       },
                     });
                   },
                   error: (err: any) => {
                     this.snackbar.openSnackBar(true, err.error.message);
-                    if (err.status === 403) {
-                      this.route.navigate(['/auth/login']);
-                      localStorage.clear();
-                    }
                   },
                 });
             }
@@ -177,6 +150,28 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
       });
   }
   handleDelete() {
-    console.log('Handle delete is working');
+    const dishId = this.route.url.split('/')[2];
+    const dialogRef = this.dailog.open(ModalComponent, {
+      data: 'are you sure you want to delete this dish ?',
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe((result) => {
+        if (result) {
+          this.ds
+            .deleteDish$(dishId)
+            .pipe(takeUntil(this.unsubscribe$$))
+            .subscribe({
+              next: (result) => {
+                this.snackbar.openSnackBar(false, result.message);
+                this.route.navigate(['dishes']);
+              },
+              error: (err) => {
+                this.snackbar.openSnackBar(true, err.error.message);
+              },
+            });
+        }
+      });
   }
 }

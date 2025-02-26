@@ -14,6 +14,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { EditRestaurantComponent } from './components/modal/edit-restaurant/edit-restaurant.component';
 
 const MATERIAL_MODULES = [
   MatFormFieldModule,
@@ -34,7 +35,7 @@ const SHARED_COMPONENTS = [PageBreadcrumComponent, SnackbarComponent];
 const FORM_MODULE = [ReactiveFormsModule];
 
 @NgModule({
-  declarations: [CUSTOM_PIPES, ...SHARED_COMPONENTS],
+  declarations: [CUSTOM_PIPES, ...SHARED_COMPONENTS, EditRestaurantComponent],
   imports: [CommonModule, ...MATERIAL_MODULES, ...FORM_MODULE],
   exports: [
     ...MATERIAL_MODULES,

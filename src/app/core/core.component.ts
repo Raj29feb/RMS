@@ -105,10 +105,6 @@ export class CoreComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
-          if (err.status === 403) {
-            this.router.navigate(['/auth/login']);
-            localStorage.clear();
-          }
         },
       });
   }
@@ -126,7 +122,9 @@ export class CoreComponent implements OnInit, OnDestroy {
   }
 
   handleLogout() {
-    const dialogRef = this.dailog.open(ModalComponent);
+    const dialogRef = this.dailog.open(ModalComponent, {
+      data: 'are you sure you want to logout ?',
+    });
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$$))

@@ -1,6 +1,6 @@
 <div class="heading">
   <app-page-breadcrum [breadcrum]="title" />
-  <div class="action-btns">
+  <div class="action-btns" *ngIf="restaurantOwner$$ | async">
     <button (click)="handleEdit()">{{ editBtn | titlecase }}</button>
     <button class="button-yes" (click)="handleDelete()">
       {{ deleteBtn | titlecase }}

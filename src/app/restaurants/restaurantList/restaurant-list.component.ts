@@ -52,11 +52,6 @@ export class RestaurantComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
-          if (err.status === 403) {
-            //place it in interceptor it self
-            this.router.navigate(['/auth/login']);
-            localStorage.clear();
-          }
         },
       });
   }
@@ -90,23 +85,15 @@ export class RestaurantComponent implements OnInit, OnDestroy {
               next: (response: any) => {
                 response.pipe(takeUntil(this.unsubscribe$$)).subscribe({
                   next: (address: any) => {
-                    this.addresses = address;
+                    this.addresses = address.data;
                   },
                   error: (err: any) => {
                     this.snackbar.openSnackBar(true, err.error.message);
-                    if (err.status === 403) {
-                      this.router.navigate(['/auth/login']);
-                      localStorage.clear();
-                    }
                   },
                 });
               },
               error: (err) => {
                 this.snackbar.openSnackBar(true, err.error.message);
-                if (err.status === 403) {
-                  this.router.navigate(['/auth/login']);
-                  localStorage.clear();
-                }
               },
             });
         }
@@ -120,14 +107,10 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (value) => {
           this.filter = owner;
-          this.addresses = value;
+          this.addresses = value.data;
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
-          if (err.status === 403) {
-            this.router.navigate(['/auth/login']);
-            localStorage.clear();
-          }
         },
       });
   }

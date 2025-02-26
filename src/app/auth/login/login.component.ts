@@ -51,7 +51,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$$))
       .subscribe({
         next: (result: any) => {
-          this.snackbar.openSnackBar(false, result.message);
           localStorage.setItem('token', result.data);
           this.router.navigate(['restaurants']);
         },

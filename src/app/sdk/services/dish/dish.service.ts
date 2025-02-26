@@ -1,21 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { enviroment } from 'src/enviroments/enviroment';
-import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
 import {
   checkDishOwner,
+  DeleteDish,
   Dish,
-  DishData,
+  updateDishResponse,
 } from '../../interfaces/dish.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DishService {
-  constructor(private http: HttpClient, private snackbar: SnackbarService) {}
+  constructor(private http: HttpClient) {}
 
   createDishes$(data: Array<object>): Observable<Object> {
     if (data)
@@ -29,28 +29,28 @@ export class DishService {
     });
   }
 
-  updateDish$(dishId: string, data: object): Observable<object> {
-    if (data)
-      return this.http.put(
-        `${enviroment.base_url}/update-dish/${dishId}`,
-        data
-      );
-    return new Observable((observer) => {
-      observer.next({ message: "Dish can't be empty", data: [] });
-      observer.next();
-    });
+  updateDish$(dishId: string, data: object): Observable<updateDishResponse> {
+    return this.http.put<updateDishResponse>(
+      `${enviroment.base_url}/update-dish/${dishId}`,
+      data
+    );
   }
 
   getDishes$(restaurantId: string): Observable<Dish[]> {
     return this.http
-      .get(`${enviroment.base_url}/dishes?data=${restaurantId}`)
+      .get<Dish[]>(`${enviroment.base_url}/dishes?data=${restaurantId}`)
       .pipe(map((response: any) => response.data.reverse()));
   }
 
-  getDish$(id: string): Observable<any> {
-    return this.http.get(`${enviroment.base_url}/dish/${id}`);
+  getDish$(id: string): Observable<{ data: Dish }> {
+    return this.http.get<{ data: Dish }>(`${enviroment.base_url}/dish/${id}`);
   }
-  checkDish$(dishId: string): Observable<Object> {
-    return this.http.get(`${enviroment.base_url}/check-dish-owner/${dishId}`);
+  deleteDish$(id: string): Observable<DeleteDish> {
+    return this.http.delete<DeleteDish>(`${enviroment.base_url}/dish/${id}`);
+  }
+  checkDish$(dishId: string): Observable<checkDishOwner> {
+    return this.http.get<checkDishOwner>(
+      `${enviroment.base_url}/check-dish-owner/${dishId}`
+    );
   }
 }

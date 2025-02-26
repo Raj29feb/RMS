@@ -14,6 +14,10 @@ export interface RestaurantData {
   __v: number;
 }
 
+export interface checkRestaurantOwner {
+  owner: boolean;
+}
+
 export interface RestaurantNames {
   restaurantName: string;
   _id: string;
