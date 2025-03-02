@@ -49,4 +49,9 @@ export class RestaurantService {
       `${enviroment.base_url}/check-restaurant-owner/${restaurantId}`
     );
   }
+  getRestaurantName$(restaurantId: string): Observable<any> {
+    return this.http.get(
+      `${enviroment.base_url}/restaurantName/${restaurantId}`
+    );
+  }
 }

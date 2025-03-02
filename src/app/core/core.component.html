@@ -15,12 +15,27 @@
             (click)="handleNavigation(navLink.title)"
           >
             <mat-icon
+              *ngIf="navLink.title !== 'cart'"
+              [ngStyle]="{
+                color: navLink.active ? 'var(--primary-color)' : 'white'
+              }"
+              >{{ navLink.icon }}</mat-icon
+            ><mat-icon
+              *ngIf="navLink.title === 'cart'"
               [ngStyle]="{
                 color: navLink.active ? 'var(--primary-color)' : 'white'
               }"
               >{{ navLink.icon }}</mat-icon
             ><span
-              *ngIf="isExpand$$.getValue()"
+              *ngIf="isExpand$$.getValue() && navLink.title !== 'cart'"
+              [ngStyle]="{
+                color: navLink.active ? 'var(--primary-color)' : 'white',
+                marginLeft: '10px'
+              }"
+              >{{ navLink.title | titlecase }}</span
+            ><span
+              *ngIf="isExpand$$.getValue() && navLink.title === 'cart'"
+              [matBadge]="cartLength"
               [ngStyle]="{
                 color: navLink.active ? 'var(--primary-color)' : 'white',
                 marginLeft: '10px'
@@ -51,7 +66,7 @@
         class="userName"
         [title]="username$$ | async"
       >
-        <span>{{ username$$ | async | titlecase }}</span>
+        <span>{{ username$$ | async | titlecase }} ({{ role$$ | async }})</span>
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #menu="matMenu">

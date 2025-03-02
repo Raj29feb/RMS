@@ -12,6 +12,9 @@ import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.se
 import { DishService } from 'src/app/sdk/services/dish/dish.service';
 import { Dish } from 'src/app/sdk/interfaces/dish.interface';
 import { RestaurantNames } from 'src/app/sdk/interfaces/restaurant.interface';
+import { AuthService } from 'src/app/sdk/services/auth/auth.service';
+import { UserService } from 'src/app/sdk/services/user/user.service';
+import { CartService } from 'src/app/sdk/services/cart/cart.service';
 
 @Component({
   selector: 'app-dishes',
@@ -29,6 +32,8 @@ export class DishesComponent implements OnDestroy {
   displayedColumns: string[] = ['position', 'name', 'restaurant', 'action'];
   restaurants: RestaurantNames[] = [];
   filter = 'all';
+  permission$$ = new Subject();
+  showAddCart = false;
   private unsubscribe$$ = new Subject();
 
   @ViewChild(MatTable) table!: MatTable<any>;
@@ -38,7 +43,9 @@ export class DishesComponent implements OnDestroy {
     private ds: DishService,
     private rs: RestaurantService,
     private snackbar: SnackbarService,
-    private router: Router
+    private router: Router,
+    private user: UserService,
+    private cart: CartService
   ) {
     this.ds
       .getDishes$('all')
@@ -62,9 +69,19 @@ export class DishesComponent implements OnDestroy {
     this.restaurantNames$$
       .pipe(take(1), pipe(takeUntil(this.unsubscribe$$)))
       .subscribe((res: any) => {
-        res.unshift({ restaurantName: 'self', _id: 'self' });
-        res.unshift({ restaurantName: 'all', _id: 'all' });
         this.restaurants = res;
+      });
+    this.user
+      .checkRole$()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (res) => {
+          this.permission$$.next(res.role === 'admin' ? true : false);
+          this.showAddCart = res.role === 'admin' ? false : true;
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+        },
       });
   }
 
@@ -144,5 +161,22 @@ export class DishesComponent implements OnDestroy {
 
   view(id: String) {
     this.router.navigate([`dishes/${id}`]);
+  }
+  addToCart(dish: Dish) {
+    const { restaurantId, _id } = dish;
+    const body = {
+      restaurantId: restaurantId,
+      dishId: _id,
+    };
+    console.log('body::', body);
+    this.cart.addToCart$(body).subscribe({
+      next: (result) => {
+        this.cart.itemAdded$$.next(true);
+        this.snackbar.openSnackBar(false, result.message);
+      },
+      error: (err) => {
+        this.snackbar.openSnackBar(true, err.error.message);
+      },
+    });
   }
 }

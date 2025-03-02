@@ -10,9 +10,10 @@ import { AppComponent } from './app.component';
 import { ModalModule } from './sdk/components/modal/modal.module';
 import { AuthInterceptor } from './sdk/interceptor/auth.interceptor';
 import { SdkModule } from './sdk/sdk.module';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, CartComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

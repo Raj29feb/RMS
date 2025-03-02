@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../sdk/components/modal/confirm-modal/modal.component';
@@ -6,6 +6,7 @@ import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../sdk/services/auth/auth.service';
 import { UserService } from '../sdk/services/user/user.service';
+import { CartService } from '../sdk/services/cart/cart.service';
 
 @Component({
   selector: 'app-core',
@@ -16,7 +17,9 @@ export class CoreComponent implements OnInit, OnDestroy {
   isExpand$$ = new BehaviorSubject<boolean>(true);
   username$$ = new BehaviorSubject<string | null>(null);
   currentRoute$$ = new BehaviorSubject<string | null>(null);
+  cartLength = 0;
   private unsubscribe$$ = new Subject();
+  role$$ = new Subject();
   logoutText = 'logout';
   style = {
     background: 'var(--primary-color)',
@@ -58,7 +61,9 @@ export class CoreComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private dailog: MatDialog,
     private snackbar: SnackbarService,
-    private router: Router
+    private router: Router,
+    private user: UserService,
+    private cartService: CartService
   ) {}
   ngOnDestroy(): void {
     this.unsubscribe$$.next(null);
@@ -107,6 +112,51 @@ export class CoreComponent implements OnInit, OnDestroy {
           this.snackbar.openSnackBar(true, err.error.message);
         },
       });
+    this.user
+      .checkRole$()
+      .pipe(
+        takeUntil(this.unsubscribe$$),
+        tap((res) => {
+          if (res.role == 'user') {
+            this.cartService.getCartData$().subscribe({
+              next: (res) => {
+                this.cartLength = res.data.items.length;
+              },
+            });
+          }
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.role$$.next(res.role);
+          if (res.role === 'user') {
+            this.navLinks.push({
+              title: 'cart',
+              icon: 'shopping_cart',
+              active: false,
+            });
+            if (url === 'cart') {
+              this.handleNavigation('cart');
+            }
+          }
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+        },
+      });
+
+    //cart check
+    this.cartService.itemAdded$$
+      .pipe(
+        tap(() => {
+          this.cartService.getCartData$().subscribe({
+            next: (res) => {
+              this.cartLength = res.data.items.length;
+            },
+          });
+        })
+      )
+      .subscribe();
   }
 
   handleNavigation(navigate: string) {

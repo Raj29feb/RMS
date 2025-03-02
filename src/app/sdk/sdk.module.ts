@@ -15,6 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './components/snackbar/snackbar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { EditRestaurantComponent } from './components/modal/edit-restaurant/edit-restaurant.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 const MATERIAL_MODULES = [
   MatFormFieldModule,
@@ -27,6 +28,7 @@ const MATERIAL_MODULES = [
   MatRadioModule,
   MatSnackBarModule,
   MatSidenavModule,
+  MatBadgeModule,
 ];
 const CUSTOM_PIPES = [SentencePipe];
 

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { enviroment } from 'src/enviroments/enviroment';
-import { UsernameResponse } from '../../interfaces/user.interface';
+import { UsernameResponse, userRole } from '../../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +22,8 @@ export class UserService {
       observer.next({ data: '' });
       observer.next();
     });
+  }
+  checkRole$(): Observable<userRole> {
+    return this.http.get<userRole>(`${enviroment.base_url}/user-role`).pipe();
   }
 }

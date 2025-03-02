@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditRestaurantComponent } from 'src/app/sdk/components/modal/edit-restaurant/edit-restaurant.component';
 import { ModalComponent } from 'src/app/sdk/components/modal/confirm-modal/modal.component';
 import { checkRestaurantOwner } from 'src/app/sdk/interfaces/restaurant.interface';
+import { AuthService } from 'src/app/sdk/services/auth/auth.service';
+import { UserService } from 'src/app/sdk/services/user/user.service';
 
 export interface Restaurant {
   _id: string;
@@ -36,13 +38,16 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
   editBtn = 'Edit';
   deleteBtn = 'delete';
   private unsubscribe$$ = new Subject();
+  permission$$ = new Subject();
   restaurantOwner$$ = new Subject();
   constructor(
     private router: ActivatedRoute,
     private rs: RestaurantService,
     private route: Router,
     private snackbar: SnackbarService,
-    private dailog: MatDialog
+    private dailog: MatDialog,
+    public auth: AuthService,
+    private user: UserService
   ) {}
   ngOnDestroy(): void {
     this.unsubscribe$$.next(null);
@@ -81,6 +86,17 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
               this.snackbar.openSnackBar(true, err.error.message);
             },
           });
+      });
+    this.user
+      .checkRole$()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (res) => {
+          this.permission$$.next(res.role === 'admin' ? true : false);
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+        },
       });
   }
 

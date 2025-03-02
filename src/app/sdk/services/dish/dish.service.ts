@@ -53,4 +53,7 @@ export class DishService {
       `${enviroment.base_url}/check-dish-owner/${dishId}`
     );
   }
+  getDishName$(dishId: string): Observable<any> {
+    return this.http.get(`${enviroment.base_url}/dishName/${dishId}`);
+  }
 }

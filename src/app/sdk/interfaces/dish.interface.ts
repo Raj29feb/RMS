@@ -28,3 +28,4 @@ export interface DeleteDish {
 export interface updateDishResponse {
   message: string;
 }
+export interface DishName {}

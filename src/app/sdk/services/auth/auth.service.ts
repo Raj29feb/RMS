@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { enviroment } from 'src/enviroments/enviroment';
 import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';

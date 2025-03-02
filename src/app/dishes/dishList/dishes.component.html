@@ -1,6 +1,8 @@
 <div class="heading">
   <app-page-breadcrum [breadcrum]="title" />
-  <button (click)="handleAddDishes()">{{ addDishesBtn | titlecase }}</button>
+  <button *ngIf="permission$$ | async" (click)="handleAddDishes()">
+    {{ addDishesBtn | titlecase }}
+  </button>
 </div>
 
 <div *ngIf="dishes.length > 0; else noData">
@@ -23,6 +25,15 @@
         </div>
         <mat-menu #menuRestaurant="matMenu">
           <div class="menuOptions">
+            <span mat-menu-item (click)="selectRestaurant('all', 'all')"
+              >All</span
+            >
+            <span
+              mat-menu-item
+              *ngIf="permission$$ | async"
+              (click)="selectRestaurant('self', 'self')"
+              >Self</span
+            >
             <span
               *ngFor="let restaurant of restaurants"
               mat-menu-item
@@ -43,8 +54,15 @@
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef>Action</th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon class="action-icon" (click)="view(element._id)"
+        <mat-icon class="action-icon" title="view" (click)="view(element._id)"
           >remove_red_eye</mat-icon
+        >
+        <mat-icon
+          class="action-icon"
+          title="Add to cart"
+          *ngIf="showAddCart"
+          (click)="addToCart(element)"
+          >add_shopping_cart</mat-icon
         >
       </td>
     </ng-container>

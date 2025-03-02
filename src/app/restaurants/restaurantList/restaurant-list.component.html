@@ -1,7 +1,9 @@
 <div class="heading">
   <!--make it as a nviagation-->
   <app-page-breadcrum [breadcrum]="title" />
-  <button (click)="handleAddress()">{{ addAddressBtn | titlecase }}</button>
+  <button *ngIf="permission$$ | async" (click)="handleAddress()">
+    {{ addAddressBtn | titlecase }}
+  </button>
 </div>
 <div *ngIf="addresses.length > 0; else noData">
   <table mat-table [dataSource]="addresses" class="mat-elevation-z8 demo-table">
@@ -25,6 +27,17 @@
         </div>
         <mat-menu #menuOwner="matMenu">
           <div class="menuOptions">
+            <span mat-menu-item mat-menu-item (click)="selectOwner('all')">
+              All
+            </span>
+            <span
+              mat-menu-item
+              *ngIf="permission$$ | async"
+              mat-menu-item
+              (click)="selectOwner('self')"
+            >
+              Self
+            </span>
             <span
               *ngFor="let owner of owners"
               mat-menu-item

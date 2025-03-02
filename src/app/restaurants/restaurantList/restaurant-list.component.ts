@@ -9,6 +9,8 @@ import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { RestaurantData } from 'src/app/sdk/interfaces/restaurant.interface';
 import { map, Subject, takeUntil, tap } from 'rxjs';
+import { AuthService } from 'src/app/sdk/services/auth/auth.service';
+import { UserService } from 'src/app/sdk/services/user/user.service';
 
 @Component({
   selector: 'app-restaurants',
@@ -18,8 +20,9 @@ import { map, Subject, takeUntil, tap } from 'rxjs';
 export class RestaurantComponent implements OnInit, OnDestroy {
   title = 'Restaurants';
   addAddressBtn = 'add restaurants';
+  permission$$ = new Subject();
   noLocation = 'no location found';
-  addresses = [{}];
+  addresses: Array<object> = [];
   displayedColumns: string[] = ['position', 'name', 'owner', 'action'];
   restaurants: RestaurantData[] = [];
   owners = new Set<string>();
@@ -32,7 +35,8 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     private dailog: MatDialog,
     private rs: RestaurantService,
     private snackbar: SnackbarService,
-    private router: Router
+    private router: Router,
+    private user: UserService
   ) {
     this.rs
       .getRestaurants$('all')
@@ -43,8 +47,6 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (value) => {
           this.addresses = [...value];
-          value.unshift({ owner: 'self', _id: 'self' });
-          value.unshift({ owner: 'all', _id: 'all' });
           this.restaurants = value;
           this.restaurants.forEach((restaurant) =>
             this.owners.add(restaurant.owner)
@@ -60,7 +62,19 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     this.unsubscribe$$.complete();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.user
+      .checkRole$()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (res) => {
+          this.permission$$.next(res.role === 'admin' ? true : false);
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+        },
+      });
+  }
 
   handleAddress() {
     const dialogRef = this.dailog.open(AddressModalComponent);
@@ -78,16 +92,19 @@ export class RestaurantComponent implements OnInit, OnDestroy {
                 this.snackbar.openSnackBar(false, response.message);
               }),
               map(() => {
-                return this.rs.getRestaurants$('all');
+                return this.rs
+                  .getRestaurants$('all')
+                  .pipe(map((response) => response.data.reverse()));
               })
             )
             .subscribe({
               next: (response: any) => {
                 response.pipe(takeUntil(this.unsubscribe$$)).subscribe({
                   next: (address: any) => {
-                    this.addresses = address.data;
+                    this.addresses = address;
                   },
                   error: (err: any) => {
+                    console.log('error::', err);
                     this.snackbar.openSnackBar(true, err.error.message);
                   },
                 });

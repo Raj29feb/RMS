@@ -12,12 +12,6 @@ h2 {
 #example-radio-group-label {
   font-weight: 500;
 }
-.mat-mdc-radio-button.mat-accent {
-  --mdc-radio-selected-icon-color: var(--primary-color);
-  --mdc-radio-selected-pressed-icon-color: var(--primary-color);
-  --mdc-radio-selected-hover-icon-color: var(--primary-color);
-  --mdc-radio-selected-focus-icon-color: var(--primary-color);
-}
 .options {
   margin-top: 30px;
   display: flex;

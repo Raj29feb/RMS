@@ -1,6 +1,9 @@
 <div class="heading">
   <app-page-breadcrum [breadcrum]="title" />
-  <div class="action-btns" *ngIf="dishOwner$$ | async">
+  <div
+    class="action-btns"
+    *ngIf="(permission$$ | async) && (dishOwner$$ | async)"
+  >
     <button (click)="handleEdit()">{{ editBtn | titlecase }}</button>
     <button class="button-yes" (click)="handleDelete()">
       {{ deleteBtn | titlecase }}

@@ -5,6 +5,7 @@ export interface LoginForm {
 
 export interface LoginResponse {
   message: string;
+  role: string;
   data: string;
 }
 

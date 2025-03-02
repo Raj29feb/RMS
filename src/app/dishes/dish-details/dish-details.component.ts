@@ -5,10 +5,12 @@ import { map, Subject, take, takeUntil, tap } from 'rxjs';
 import { ModalComponent } from 'src/app/sdk/components/modal/confirm-modal/modal.component';
 import { DishModalComponent } from 'src/app/sdk/components/modal/dish-modal/dish-modal.component';
 import { checkDishOwner } from 'src/app/sdk/interfaces/dish.interface';
+import { AuthService } from 'src/app/sdk/services/auth/auth.service';
 
 import { DishService } from 'src/app/sdk/services/dish/dish.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
 import { SnackbarService } from 'src/app/sdk/services/snackbar/snackbar.service';
+import { UserService } from 'src/app/sdk/services/user/user.service';
 
 export interface Dish {
   _id: string;
@@ -42,13 +44,16 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
   dishOwner$$ = new Subject();
   restaurantNames$$ = new Subject();
   private unsubscribe$$ = new Subject();
+  permission$$ = new Subject();
   constructor(
     private dailog: MatDialog,
     private router: ActivatedRoute,
     private rs: RestaurantService,
     private route: Router,
     private ds: DishService,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    public auth: AuthService,
+    private user: UserService
   ) {}
   ngOnDestroy(): void {
     this.unsubscribe$$.next(null);
@@ -88,6 +93,18 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
               this.snackbar.openSnackBar(true, err.error.message);
             },
           });
+      });
+
+    this.user
+      .checkRole$()
+      .pipe(takeUntil(this.unsubscribe$$))
+      .subscribe({
+        next: (res) => {
+          this.permission$$.next(res.role === 'admin' ? true : false);
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(true, err.error.message);
+        },
       });
   }
   getRestaurantsNames(filter: string) {

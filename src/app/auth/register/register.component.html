@@ -2,6 +2,13 @@
 <div class="loginForm-container">
   <form [formGroup]="registerForm" (submit)="handleSubmit()">
     <div>
+      <mat-label id="example-radio-group-label">Role</mat-label>
+      <mat-radio-group aria-label="Select an option" formControlName="role">
+        <mat-radio-button [value]="'user'">User</mat-radio-button>
+        <mat-radio-button [value]="'admin'">Admin</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div>
       <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>
         <input

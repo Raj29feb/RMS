@@ -1,0 +1,45 @@
+<div class="heading">
+  <app-page-breadcrum [breadcrum]="title" />
+</div>
+<div class="cart-container">
+  <div *ngFor="let item of items$$ | async" class="cart-item">
+    <img src="denim-tshirt.jpg" [alt]="item.dishName" class="item-image" />
+    <div class="item-details">
+      <div><b>Dish</b></div>
+      <div class="item-name">{{ item.dishName | titlecase }}</div>
+      <div class="item-ref">{{ item.dishId }}</div>
+    </div>
+    <div>
+      <b>Restaurant</b>
+      <div class="item-color">{{ item.restaurantName | titlecase }}</div>
+    </div>
+    <div class="item-quantity">
+      <div class="quantity-controls">
+        <button
+          [disabled]="!(item.quantity - 1)"
+          (click)="handleCart(item.quantity - 1, item._id)"
+        >
+          -
+        </button>
+        <span>{{ item.quantity }}</span>
+        <button (click)="handleCart(item.quantity + 1, item._id)">+</button>
+      </div>
+    </div>
+    <div class="item-price">
+      {{ item.itemTotal | currency : "USD" : "symbol" }}
+    </div>
+    <mat-icon (click)="handleRemoveItem(item._id)" class="remove-item"
+      >close</mat-icon
+    >
+  </div>
+
+  <div class="cart-footer">
+    <a routerLink="/restaurants" class="back-to-shop">
+      <mat-icon>subdirectory_arrow_left</mat-icon>
+      Back to Shop
+    </a>
+    <div class="subtotal">
+      Subtotal: {{ subTotal$$ | async | currency : "USD" : "symbol" }}
+    </div>
+  </div>
+</div>

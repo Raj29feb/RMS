@@ -7,7 +7,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 
 import { noWhitespaceValidator } from '../../sdk/noWhitespace.validator';
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
@@ -51,7 +51,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$$))
       .subscribe({
         next: (result: any) => {
-          localStorage.setItem('token', result.data);
+          this.snackbar.openSnackBar(false, result.message);
+          localStorage.setItem('token', result.token);
           this.router.navigate(['restaurants']);
         },
         error: (err) => {

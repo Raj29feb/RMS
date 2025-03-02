@@ -4,6 +4,8 @@ import { CoreComponent } from './core.component';
 import { SdkModule } from '../sdk/sdk.module';
 import { LogoModule } from '../logo/logo.module';
 import { RouterModule, Routes } from '@angular/router';
+import { CartComponent } from '../cart/cart.component';
+import { roleGuard } from '../sdk/guard/role/role.guard';
 
 const routes: Routes = [
   {
@@ -26,6 +28,11 @@ const routes: Routes = [
         path: 'distances',
         loadChildren: () =>
           import('../distance/distance.module').then((m) => m.DistanceModule),
+      },
+      {
+        path: 'cart',
+        canActivate: [roleGuard],
+        component: CartComponent,
       },
     ],
   },
