@@ -123,6 +123,7 @@ export class CartComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.snackbar.openSnackBar(false, result.message);
+          this.cartService.itemAdded$$.next(true);
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);

@@ -30,7 +30,7 @@
             >
             <span
               mat-menu-item
-              *ngIf="permission$$ | async"
+              *ngIf="!showAddCart"
               (click)="selectRestaurant('self', 'self')"
               >Self</span
             >

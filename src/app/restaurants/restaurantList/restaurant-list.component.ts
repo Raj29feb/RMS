@@ -21,6 +21,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   title = 'Restaurants';
   addAddressBtn = 'add restaurants';
   permission$$ = new Subject();
+  showSelf = false;
   noLocation = 'no location found';
   addresses: Array<object> = [];
   displayedColumns: string[] = ['position', 'name', 'owner', 'action'];
@@ -69,6 +70,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.permission$$.next(res.role === 'admin' ? true : false);
+          this.showSelf = res.role === 'admin' ? true : false;
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);

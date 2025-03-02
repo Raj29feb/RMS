@@ -32,7 +32,7 @@
             </span>
             <span
               mat-menu-item
-              *ngIf="permission$$ | async"
+              *ngIf="showSelf"
               mat-menu-item
               (click)="selectOwner('self')"
             >
