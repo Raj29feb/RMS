@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Subject, take, takeUntil, tap } from 'rxjs';
+import { map, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
 import { ModalComponent } from 'src/app/sdk/components/modal/confirm-modal/modal.component';
 import { DishModalComponent } from 'src/app/sdk/components/modal/dish-modal/dish-modal.component';
 import { checkDishOwner } from 'src/app/sdk/interfaces/dish.interface';
@@ -69,28 +69,20 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
         this.ds
           .getDish$(dishId as string)
           .pipe(
-            tap(() =>
-              this.ds
-                .checkDish$(dishId as string)
-                .pipe(takeUntil(this.unsubscribe$$))
-                .subscribe({
-                  next: (result) => {
-                    const data = result as checkDishOwner;
-                    this.dishOwner$$.next(data.owner);
-                  },
-                  error: (err) => {
-                    this.dishOwner$$.next(err.error.owner);
-                  },
-                })
-            ),
-            takeUntil(this.unsubscribe$$)
+            tap((res) => {
+              this.dish = res.data;
+            }),
+            takeUntil(this.unsubscribe$$),
+            switchMap(() => this.ds.checkDish$(dishId as string))
           )
           .subscribe({
-            next: (res) => {
-              this.dish = res.data;
+            next: (result) => {
+              const data = result as checkDishOwner;
+              this.dishOwner$$.next(data.owner);
             },
             error: (err) => {
-              this.snackbar.openSnackBar(true, err.error.message);
+              if (err.error.owner)
+                this.snackbar.openSnackBar(true, err.error.message);
             },
           });
       });

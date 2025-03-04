@@ -1,5 +1,14 @@
 import { Component, effect, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  map,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../sdk/components/modal/confirm-modal/modal.component';
 import { SnackbarService } from '../sdk/services/snackbar/snackbar.service';
@@ -117,17 +126,6 @@ export class CoreComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$$),
         tap((res) => {
-          if (res.role == 'user') {
-            this.cartService.getCartData$().subscribe({
-              next: (res) => {
-                this.cartLength = res.data.items.length;
-              },
-            });
-          }
-        })
-      )
-      .subscribe({
-        next: (res) => {
           this.role$$.next(res.role);
           if (res.role === 'user') {
             this.navLinks.push({
@@ -139,6 +137,18 @@ export class CoreComponent implements OnInit, OnDestroy {
               this.handleNavigation('cart');
             }
           }
+        }),
+        switchMap((res) => {
+          if (res.role == 'user') {
+            return this.cartService.getCartData$();
+          }
+          return of([]);
+        })
+      )
+      .subscribe({
+        next: (res: any) => {
+          if (res && res?.data && res?.data?.items)
+            this.cartLength = res?.data?.items.length;
         },
         error: (err) => {
           this.snackbar.openSnackBar(true, err.error.message);
@@ -147,16 +157,12 @@ export class CoreComponent implements OnInit, OnDestroy {
 
     //cart check
     this.cartService.itemAdded$$
-      .pipe(
-        tap(() => {
-          this.cartService.getCartData$().subscribe({
-            next: (res) => {
-              this.cartLength = res.data.items.length;
-            },
-          });
-        })
-      )
-      .subscribe();
+      .pipe(switchMap(() => this.cartService.getCartData$()))
+      .subscribe({
+        next: (res) => {
+          this.cartLength = res.data.items.length;
+        },
+      });
   }
 
   handleNavigation(navigate: string) {

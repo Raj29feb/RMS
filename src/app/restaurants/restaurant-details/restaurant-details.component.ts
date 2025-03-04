@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { SnackbarService } from '../../sdk/services/snackbar/snackbar.service';
 import { RestaurantService } from 'src/app/sdk/services/restaurant/restaurant.service';
-import { map, Subject, takeUntil, tap } from 'rxjs';
+import { catchError, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { EditRestaurantComponent } from 'src/app/sdk/components/modal/edit-restaurant/edit-restaurant.component';
 import { ModalComponent } from 'src/app/sdk/components/modal/confirm-modal/modal.component';
@@ -62,28 +62,20 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
         this.rs
           .getRestaurant$(restaurantId as String)
           .pipe(
-            tap(() =>
-              this.rs
-                .checkRestaurant$(restaurantId as string)
-                .pipe(takeUntil(this.unsubscribe$$))
-                .subscribe({
-                  next: (result) => {
-                    const data = result as checkRestaurantOwner;
-                    this.restaurantOwner$$.next(data.owner);
-                  },
-                  error: (err) => {
-                    this.restaurantOwner$$.next(err.error.owner);
-                  },
-                })
-            ),
-            takeUntil(this.unsubscribe$$)
+            tap((res) => {
+              this.restaurant = res;
+            }),
+            takeUntil(this.unsubscribe$$),
+            switchMap(() => this.rs.checkRestaurant$(restaurantId as string))
           )
           .subscribe({
-            next: (res) => {
-              this.restaurant = res;
+            next: (result) => {
+              console.log(result);
+              const data = result as checkRestaurantOwner;
+              this.restaurantOwner$$.next(data.owner);
             },
             error: (err) => {
-              this.snackbar.openSnackBar(true, err.error.message);
+              this.restaurantOwner$$.next(err.error.owner);
             },
           });
       });

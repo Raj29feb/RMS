@@ -70,45 +70,17 @@ export class CartComponent implements OnInit, OnDestroy {
     this.unsubscribe$$.complete();
   }
   getCartData() {
-    this.cartService
-      .getCartData$()
-      .pipe(
-        map((result) => {
-          result.data.items.map((item) => {
-            this.dishService.getDishName$(item.dishId).subscribe({
-              next: (result) => {
-                item.dishName = result.data.name;
-              },
-              error: (err) => {
-                this.snackbar.openSnackBar(true, err.error.message);
-              },
-            });
-            return this.restaurantService
-              .getRestaurantName$(item.restaurantId)
-              .subscribe({
-                next: (result) => {
-                  item.restaurantName = result.data.restaurantName;
-                  return item;
-                },
-                error: (err) => {
-                  this.snackbar.openSnackBar(true, err.error.message);
-                },
-              });
-          });
-          this.cartData = result.data;
-          return result;
-        })
-      )
-      .subscribe({
-        next: (result) => {
-          // console.log('result from cartService api::', result.data);
-          this.subTotal$$.next(result.data.totalAmount);
-          this.items$$.next(result.data.items);
-        },
-        error: (err) => {
-          this.snackbar.openSnackBar(true, err.error.message);
-        },
-      });
+    this.cartService.getCartData$().subscribe({
+      next: (result) => {
+        // console.log('result from cartService api::', result.data);
+        this.subTotal$$.next(result.data.totalAmount);
+        this.items$$.next(result.data.items);
+        this.cartData = result.data;
+      },
+      error: (err) => {
+        this.snackbar.openSnackBar(true, err.error.message);
+      },
+    });
   }
 
   handleRemoveItem(itemId: string) {

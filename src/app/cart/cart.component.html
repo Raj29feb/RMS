@@ -3,15 +3,15 @@
 </div>
 <div class="cart-container">
   <div *ngFor="let item of items$$ | async" class="cart-item">
-    <img src="denim-tshirt.jpg" [alt]="item.dishName" class="item-image" />
+    <img src="denim-tshirt.jpg" [alt]="item.dishId.name" class="item-image" />
     <div class="item-details">
       <div><b>Dish</b></div>
-      <div class="item-name">{{ item.dishName | titlecase }}</div>
-      <div class="item-ref">{{ item.dishId }}</div>
+      <div class="item-name">{{ item.dishId.name | titlecase }}</div>
+      <div class="item-ref">{{ item.dishId._id }}</div>
     </div>
     <div>
       <b>Restaurant</b>
-      <div class="item-color">{{ item.restaurantName | titlecase }}</div>
+      <div class="item-color">{{ item.dishId.restaurantName | titlecase }}</div>
     </div>
     <div class="item-quantity">
       <div class="quantity-controls">

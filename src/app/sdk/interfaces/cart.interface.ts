@@ -1,9 +1,11 @@
+import { Dish } from './dish.interface';
+
 export interface CartItem {
   price: number;
   quantity: number;
   restaurantId: string;
   restaurantName: string;
-  dishId: string;
+  dishId: Dish;
   dishName: string;
   itemTotal: number;
   _id: string;
