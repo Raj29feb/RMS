@@ -63,28 +63,27 @@ export class DishDetailsComponent implements OnInit, OnDestroy {
     this.getRestaurantsNames('all');
 
     this.router.paramMap
-      .pipe(takeUntil(this.unsubscribe$$))
-      .subscribe((params) => {
-        const dishId = params.get('dishId');
-        this.ds
-          .getDish$(dishId as string)
-          .pipe(
+      .pipe(
+        takeUntil(this.unsubscribe$$),
+        switchMap((params) => {
+          const dishId = params.get('dishId');
+          return this.ds.getDish$(dishId as string).pipe(
             tap((res) => {
               this.dish = res.data;
             }),
-            takeUntil(this.unsubscribe$$),
             switchMap(() => this.ds.checkDish$(dishId as string))
-          )
-          .subscribe({
-            next: (result) => {
-              const data = result as checkDishOwner;
-              this.dishOwner$$.next(data.owner);
-            },
-            error: (err) => {
-              if (err.error.owner)
-                this.snackbar.openSnackBar(true, err.error.message);
-            },
-          });
+          );
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          const data = result as checkDishOwner;
+          this.dishOwner$$.next(data.owner);
+        },
+        error: (err) => {
+          if (err.error.owner)
+            this.snackbar.openSnackBar(true, err.error.message);
+        },
       });
 
     this.user

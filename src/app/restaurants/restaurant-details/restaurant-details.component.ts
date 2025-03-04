@@ -56,29 +56,29 @@ export class RestaurantDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.router.paramMap
-      .pipe(takeUntil(this.unsubscribe$$))
-      .subscribe((params) => {
-        const restaurantId = params.get('restaurantId');
-        this.rs
-          .getRestaurant$(restaurantId as String)
-          .pipe(
+      .pipe(
+        takeUntil(this.unsubscribe$$),
+        switchMap((params) => {
+          const restaurantId = params.get('restaurantId');
+          return this.rs.getRestaurant$(restaurantId as String).pipe(
             tap((res) => {
               this.restaurant = res;
             }),
-            takeUntil(this.unsubscribe$$),
             switchMap(() => this.rs.checkRestaurant$(restaurantId as string))
-          )
-          .subscribe({
-            next: (result) => {
-              console.log(result);
-              const data = result as checkRestaurantOwner;
-              this.restaurantOwner$$.next(data.owner);
-            },
-            error: (err) => {
-              this.restaurantOwner$$.next(err.error.owner);
-            },
-          });
+          );
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result);
+          const data = result as checkRestaurantOwner;
+          this.restaurantOwner$$.next(data.owner);
+        },
+        error: (err) => {
+          this.restaurantOwner$$.next(err.error.owner);
+        },
       });
+
     this.user
       .checkRole$()
       .pipe(takeUntil(this.unsubscribe$$))
